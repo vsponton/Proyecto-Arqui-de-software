@@ -1,9 +1,10 @@
 package users
 
-type UserData struct{
-	User  string `json:"users"`
+type LoginRequest struct {
+	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
 type LoginResponse struct {
 	Token string `json:"token"`
 }

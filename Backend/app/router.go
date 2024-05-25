@@ -1,12 +1,11 @@
-package app
+package router
+
 import (
-
 	"backend/controllers/users"
-	"github.com/gin-gonic/gin"
 
+	"github.com/gin-gonic/gin"
 )
 
-func MapRoutes(engine *gin.Engine) { //levanta la aplicacion
+func MapUrls(engine *gin.Engine) {
 	engine.POST("/users/login", users.Login)
-	
 }
