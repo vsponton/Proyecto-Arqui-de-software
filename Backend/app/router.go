@@ -1,8 +1,6 @@
 package router
 
 import (
-	"backend/controllers/users"
-
 	cors "github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -24,13 +22,8 @@ func init() {
 	}))
 }
 
-func MapUrls(engine *gin.Engine) {
-	engine.POST("/users/login", users.Login)
-
-}
-
 func StartRoute() {
-	MapUrls()
+	mapUrls()
 
 	log.Info("Starting server")
 	err := router.Run(":8080")
