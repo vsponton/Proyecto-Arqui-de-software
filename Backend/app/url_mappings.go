@@ -2,6 +2,7 @@ package app
 
 import (
 	log "github.com/sirupsen/logrus"
+	usersController "mvc-go/controllers/users"
 )
 
 func mapUrls() {
@@ -10,7 +11,7 @@ func mapUrls() {
 	router.POST("/sensor", sensorController.SensorInsert)
 	router.PUT("/sensor/:id/activar", sensorController.ActivarSensor)
 	router.PUT("/sensor/:id/pausar", sensorController.PausarSensor)
-	router.GET("/sensor/:id", sensorController.GetSensorById)
+	router.POST("/login", usersController.Login)
 
 	router.GET("/vendedor/:id", vendedorController.GetVendedorById)
 

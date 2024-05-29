@@ -1,12 +1,22 @@
 package users
 
-import "backend/domain/users"
+import (
+	"backend/domain/users"
+	usersClient "mvc-go/clients/users"
+)
 
 func Login(request users.LoginRequest) users.LoginResponse {
-
-	// Validar contra la base de datos
-
-	return users.LoginResponse{
-		Token: "abcdef123456",
+	var user model.User = usersClient.GetUserByUsername(request.Username)
+	if user.password!=request.Password {
+	return 	users.LoginResponse{
+		Token: "-1",
 	}
+
+	}
+	return users.LoginResponse{
+		Token: "1",
+	}
+
+	
 }
+
