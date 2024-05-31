@@ -7,4 +7,3 @@ type CursoDetailDto struct {
 	// SensoresMinDto SensoresMinDto `json:"sensores,omitempty"`
 }
 
-// type BarriosDetailDto []BarrioDetailDto
