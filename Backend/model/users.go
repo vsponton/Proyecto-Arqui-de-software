@@ -7,6 +7,8 @@ type User struct {
 	Email        string    // User Email
 	PasswordHash string    // User Password Hash
 	Type         string    // User Type. Allowed values: admin, normal
-	CreationDate time.Time // User creation date
-	LastUpdated  time.Time // User last updated date
+	Name         string    //User Name
+	LastName     string    //User LastName 
 }
+
+type Users []User     //arreglo de usuarios 
