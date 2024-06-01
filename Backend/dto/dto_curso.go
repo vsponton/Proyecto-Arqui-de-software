@@ -1,16 +1,25 @@
 package dto
-//dto es domain
 
-import "time"
+//dto es domain
 
 // PANTALLA DE INICIO - HOME
 
-type CourseResponse_Category struct {
-	ID           int64     `json:"id"`
-	Title        string    `json:"title"`
-	Category string `json:"category"`
-	ImageURL     string    `json:"image_url"`
+type CourseResponse_Basic struct {
+	ID_Course int64  `json:"id"`
+	Title     string `json:"title"`
+	Category  string `json:"category"`
+	ImageURL  string `json:"image_url"`
 }
+
+type CoursesResponse_Basic []CourseResponse_Basic // si está en plural son muchos
+
+type CoursesResponse_Full []CourseResponse_Full // si está en plural son muchos
+
+type CoursesRequest_Category []CourseRequest_Category
+
+type CoursesRequest_Title []CourseRequest_Title
+
+type CoursesRequest_Description []CourseRequest_Description
 
 // BUSQUEDA DE CURSOS
 
@@ -26,30 +35,17 @@ type CourseRequest_Description struct {
 	Description string `json:"description"`
 }
 
-type CourseResponse struct {
-	ID           int64     `json:"id"`
-	Title        string    `json:"title"`
-	Description  string    `json:"description"`
-	Category     string    `json:"category"`
-	ImageURL     string    `json:"image_url"`
-	CreationDate time.Time `json:"creation_date"`
-	Duration     int64     `json:"duration"`
-	Instructor   string    `json:"instructor"`
-	Requirements string    `json:"requirements"`
-}
+// DETALLE DEL CURSO
 
-//DETALLE DEL CURSO
-
-type CourseResponse_Detail struct {
-	ID           int64     `json:"id"`
-	Title        string    `json:"title"`
-	Description  string    `json:"description"`
-	Category     string    `json:"category"`
-	ImageURL     string    `json:"image_url"`
-	CreationDate time.Time `json:"creation_date"`
-	Duration     int64     `json:"duration"`
-	Instructor   string    `json:"instructor"`
-	Requirements string    `json:"requirements"`
+type CourseResponse_Full struct {
+	ID_Course    int64  `json:"id"`
+	Title        string `json:"title"`
+	Description  string `json:"description"`
+	Category     string `json:"category"`
+	ImageURL     string `json:"image_url"`
+	Duration     int64  `json:"duration"`
+	Instructor   string `json:"instructor"`
+	Requirements string `json:"requirements"`
 }
 
 // INSCRIPCION EN CURSO
@@ -57,30 +53,7 @@ type CourseResponse_Detail struct {
 type CourseRequest_Registration struct {
 	// sobre el usuario
 	Token string `json:"token"`
-	Email    string `json:"email"`
 	// sobre el curso
-	ID           int64     `json:"id"`
-	Title        string    `json:"title"`
-}
-
-type CourseResponse_Registration struct {
-	ID           int64     `json:"id"`
-	Title        string    `json:"title"`
-	Description  string    `json:"description"`
-	Category     string    `json:"category"`
-	ImageURL     string    `json:"image_url"`
-}
-
-
-// MIS CURSOS
-type CourseResponse struct {
-	ID           int64     `json:"id"`
-	Title        string    `json:"title"`
-	Description  string    `json:"description"`
-	Category     string    `json:"category"`
-	ImageURL     string    `json:"image_url"`
-	CreationDate time.Time `json:"creation_date"`
-	Duration     int64     `json:"duration"`
-	Instructor   string    `json:"instructor"`
-	Requirements string    `json:"requirements"`
+	ID_Course int64  `json:"id"`
+	Title     string `json:"title"`
 }
