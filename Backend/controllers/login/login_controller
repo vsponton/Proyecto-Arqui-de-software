@@ -1,0 +1,82 @@
+package login
+
+import (
+	"cursos-ucc/dto"
+	"fmt"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+func Login(c *gin.Context) {
+	var loginDto dto.LoginDto
+	err := c.BindJSON(&loginDto)
+
+	if err != nil {
+		log.Error(err.Error())
+		c.JSON(http.StatusBadRequest, dto.Result{
+			Message: fmt.Sprintf("Invalid request: %s", err.Error()),
+		})
+		return
+	}
+	log.Debug(loginDto)
+
+	var loginResponseDto dto.LoginResponseDto
+	loginResponseDto, err := service.UserService.Login(loginDto)
+
+	// OPCION A
+	token, err := services.Login(loginDto.Email, loginDto.Password)
+
+	if err != nil {
+		if err.Status() == 400 {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+		c.JSON(http.StatusForbidden, err.Error())
+		return
+	}
+	// HASTA ACA A -----
+
+	// OPCION B
+	if err != nil {
+		if err.Error() == "invalid credentials" {
+			c.JSON(http.StatusUnauthorized, dto.Result{
+				Message: "Unauthorized login: Invalid credentials",
+			})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, dto.Result{
+			Message: fmt.Sprintf("Internal server error: %s", err.Error()),
+		})
+		return
+	}
+	// HASTA ACA B ---
+
+	c.JSON(http.StatusOK, loginResponseDto{
+		Token: token,
+	})
+}
+
+func Register(c *gin.Context) {
+	var registerDto dto.RegisterDto
+	err := c.BindJSON(&registerDto)
+
+	if err != nil {
+		log.Error(err.Error())
+		c.JSON(http.StatusBadRequest, dto.Result{
+			Message: fmt.Sprintf("Invalid request: %s", err.Error()),
+		})
+		return
+	}
+	log.Debug(registerDto)
+
+	createdUser, er := service.RegisterService.InsertUser(registerDto)
+	if er != nil {
+		c.JSON(er.Status(), dto.Result{
+			Message: fmt.Sprintf("Error creating user: %s", er.Error()),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, createdUser)
+}
