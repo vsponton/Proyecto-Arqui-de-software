@@ -19,7 +19,7 @@ var (
 
 func init() {
 	// DB Connections Paramters
-	DBName := "cursosucc"  //Nombre de la base de datos local de ustedes
+	DBName := "test"  //Nombre de la base de datos local de ustedes
 	DBUser := "root"      //usuario de la base de datos, habitualmente root
 	DBPass := "root"            //password del root en la instalacion
 	DBHost := "localhost" //host de la base de datos. hbitualmente 127.0.0.1
