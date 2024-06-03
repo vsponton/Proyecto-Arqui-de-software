@@ -2,27 +2,31 @@ package app
 
 import (
 	log "github.com/sirupsen/logrus"
-	usersController "mvc-go/controllers/users"
 )
 
 func mapUrls() {
 
-	// Sensores Mapping
-	router.POST("/sensor", sensorController.SensorInsert)
-	router.PUT("/sensor/:id/activar", sensorController.ActivarSensor)
-	router.PUT("/sensor/:id/pausar", sensorController.PausarSensor)
-	router.POST("/login", usersController.Login)
+	// Login Mapping
+	router.POST("/login", loginController.Login)
 
-	router.GET("/vendedor/:id", vendedorController.GetVendedorById)
+	// Register Mapping
+	router.POST("/register/", loginController.Register)
 
-	router.GET("/comprador/:id", compradorController.GetCompradorById)
+	// Courses Mapping
+	router.GET("/course/:id_user", courseController.GetCourseByIdUser)
+	router.GET("/course/title=:title", courseController.GetCourseByTitle)
+	router.GET("/course/category=:category", courseController.GetCourseByCategory)
+	router.GET("/course/description=:description", courseController.GetCourseByDescription)
 
-	// Bario Mapping
-	router.GET("/barrio/:id", barrioController.GetBarrioDetalleById)
-	router.GET("/barrio", barrioController.GetBarrios)
+	router.POST("/course", courseController.PostCourse)
 
-	// Medidcion Mapping
-	router.POST("/medicion", medicionController.RegistrarMedicion)
+	router.PUT("/course/:id_course", courseController.PutCourse)
+
+	router.DELETE("/course", courseController.DeleteCourse)
+
+	// Users Mapping
+	router.GET("/user/:id_user", userController.GetUserByIdUser)
+	router.GET("/user/email=:email", userController.GetUserByEmail)
 
 	log.Info("Finishing mappings configurations")
 }
