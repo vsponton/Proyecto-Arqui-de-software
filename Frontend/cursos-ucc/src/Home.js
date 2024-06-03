@@ -4,11 +4,15 @@ import { FaUser,FaLock,FaPencil } from "react-icons/fa";
 
 const Home = () => {
   
-    const[register, setRegister] =useState(false);
+    const[admin, setAdmin] =useState(false);
 
-
-    const showHome = () => {
+    const toggleAdmin = () => {
+        setAdmin(!admin);
+    }
+    
+    const showHomeAdmin = () => {
         return (
+            //if ... es administrador
             <div class="container">
             <div class="sidebar">
                 <div class="admin">ADMINISTRADOR</div>
@@ -16,7 +20,7 @@ const Home = () => {
             </div>
             <div class="main-content">
                 <div class="search-bar">
-                    <input type="text" placeholder="Buscar" />
+                    <input type="text" placeholder="Search" />
                 </div>
                 <div class="courses">
                     <div class="course-item">
@@ -81,19 +85,73 @@ const Home = () => {
                 </div>
             </div>
         </div>
+        //else ... alumno
+        
             
            
        
         )
     }
 
-  
+  const showHomeAlumno = () => {
+    return (
+        <div className="containerAlum">
+            <div className="left-section">
+                <div className="header">
+                    <input type="text" placeholder="ALUMNO" />
+                    <div class="search-bar">
+                    <input type="text" placeholder="Search" />
+                </div>
+                </div>
+                <div className="courses">
+                    <div className="courses-title">Cursos</div>
+                    <div className="course">
+                        <span>programación en C++</span>
+                        <button>+</button>
+                    </div>
+                    <div className="course">
+                        <span>Desarrollo de Software</span>
+                        <button>+</button>
+                    </div>
+                    <div className="course">
+                        <span>Base de datos</span>
+                        <button>+</button>
+                    </div>
+                    <div className="course">
+                        <span>Fundamentos de programación</span>
+                        <button>+</button>
+                    </div>
+                    <div className="course">
+                        <span>Ciberseguridad</span>
+                        <button>+</button>
+                    </div>
+                </div>
+            </div>
+            <div className="right-section">
+                <div className="available-courses">
+                    <div className="available-courses-title">Cursos disponibles</div>
+                    <div className="available-course">
+                        <input type="text" value="machine-learning" readOnly />
+                    </div>
+                    <div className="available-course">
+                        <input type="text" value="desarrollo web" readOnly />
+                    </div>
+                    <div className="available-course">
+                        <input type="text" value="JavaScript desde cero" readOnly />
+                    </div>
+                </div>
+                <button className="alum-button">INSCRIBIRME</button>
+            </div>
+        </div>
+                
+    )
+  }
 
   return(
     <div>
-      {showHome()}
+    <button onClick={toggleAdmin}>CAMBIAR VISTA</button>
+      {admin ? showHomeAdmin() : showHomeAlumno()}
     </div>
   );
 };
 export default Home;
-
