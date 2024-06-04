@@ -76,7 +76,7 @@ func (c *courseClient) SearchCoursesByDescription(description string) (dto.Cours
 }
 
 func (c *courseClient) CreateCourse(course dto.CoursesResponse_Full) (dto.CoursesResponse_Full, error.ApiError) {
-
+	return dto.CoursesResponse_Full{}, nil
 }
 
 func (c *courseClient) UpdateCourse(course dto.CourseRequest_Registration) (dto.CourseResponse_Full, error.ApiError) {

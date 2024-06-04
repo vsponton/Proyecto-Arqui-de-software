@@ -7,6 +7,7 @@ import (
 
 	"cursos-ucc/clients/user"
 	"cursos-ucc/clients/course"
+	"cursos-ucc/clients/model"
 )
 
 var (
@@ -38,9 +39,9 @@ func init() {
 
 func StartDbEngine() {
 	// We need to migrate all classes model.
-	// db.AutoMigrate(&model.Barrio{})
-	//db.AutoMigrate(&model.Sensor{})
-	//db.AutoMigrate(&model.Medicion{})
+	db.AutoMigrate(&model.courses{})
+	db.AutoMigrate(&model.register{})
+	db.AutoMigrate(&model.user{})
 
 	log.Info("Finishing Migration Database Tables")
 }
