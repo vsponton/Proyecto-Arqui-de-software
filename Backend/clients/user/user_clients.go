@@ -1,8 +1,10 @@
 package user
 
 import (
+	"cursos-ucc/db"
 	"cursos-ucc/model"
 	"fmt"
+	
 )
 
 func GetUserById(id int64) (model.User, error) {
@@ -16,7 +18,7 @@ func GetUserById(id int64) (model.User, error) {
 
 func GetUserByEmail(email string) (model.User, error) {
 	var user model.User
-	result := Db.Where("email = ?", email).First(&user)
+	result := db.Where("email = ?", email).First(&user)
 	if result.Error != nil {
 		return model.User{}, fmt.Errorf("not found user with email: %s", email)
 	}

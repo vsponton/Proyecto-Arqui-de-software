@@ -29,7 +29,7 @@ func mapUrls() {
 	router.DELETE("/course", courseController.DeleteCourse)
 
 	// Users Mapping
-	router.GET("/user/:id_user", userController.GetUserByIdUser)
+	router.GET("/user/:id_user", userController.GetUserById)
 	router.GET("/user/email=:email", userController.GetUserByEmail)
 
 	log.Info("Finishing mappings configurations")

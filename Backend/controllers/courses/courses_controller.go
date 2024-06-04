@@ -4,10 +4,12 @@ import (
 	"cursos-ucc/dto"
 	"net/http"
 	"strconv"
-	
+	service "cursos-ucc/services"
 
 	"github.com/gin-gonic/gin"
 )
+
+var courseService service.CourseServiceInterface = service.CourseService
 
 func GetCourseByIdUser(c *gin.Context) {
 
@@ -26,11 +28,13 @@ func GetCourseByIdUser(c *gin.Context) {
 
 func GetCourseByTitle(c *gin.Context) {
 
+	//coursesDto, err := courseService.GetCourseByIdUser(id) ---> ver si va o no 
+
 	var title string
 	title = c.Param(title)
 	var CoursesResponse_Full dto.CoursesResponse_Full
 
-	CoursesResponse_Full, err := service.CourseService.searchByTitle(title)
+	CoursesResponse_Full, err := service.CourseService.SearchByTitle(title)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, err.Error())
@@ -46,7 +50,7 @@ func GetCourseByCategory(c *gin.Context) {
 	category = c.Param(category)
 	var CoursesResponse_Full dto.CoursesResponse_Full
 
-	CoursesResponse_Full, err := service.CourseService.searchByCategoty(category)
+	CoursesResponse_Full, err := service.CourseService.SearchByCategory(category)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, err.Error())
@@ -62,7 +66,7 @@ func GetCourseByDescription(c *gin.Context) {
 	description = c.Param(description)
 	var CoursesResponse_Full dto.CoursesResponse_Full
 
-	CoursesResponse_Full, err := service.CourseService.searchByTitle(description)
+	CoursesResponse_Full, err := service.CourseService.SearchByDescription(description)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, err.Error())

@@ -1,15 +1,13 @@
 package db
 
 import (
-	userClient "mvc-go/clients/user"
-	courseClient "mvc-go/clients/course"
-
-
 	"cursos-ucc/model"
 
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
+	"cursos-ucc/clients/user"  
+    "cursos-ucc/clients/course"
 )
 
 var (

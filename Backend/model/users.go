@@ -1,7 +1,5 @@
 package model
 
-import "time"
-
 type User struct {
 	ID           int64     // User ID
 	Email        string    // User Email

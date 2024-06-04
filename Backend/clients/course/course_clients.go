@@ -2,8 +2,8 @@ package clients
 
 import (
 	"cursos-ucc/dto"
-	"cursos-ucc/error"
 	"cursos-ucc/model"
+	error "cursos-ucc/utils/errors"
 	"fmt"
 )
 
@@ -19,7 +19,7 @@ type CourseClientInterface interface {
 
 type courseClient struct{}
 
-var CourseClient CourseClientInterface = &courseClient{}
+var CourseClient CourseClientInterface = &CoursesClient{}
 
 func ConnectDatabase() error {
 	dsn := "root:root@tcp(localhost:3306)/coursesplatform?charset=utf8mb4&parseTime=True&loc=Local"

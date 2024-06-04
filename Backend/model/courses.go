@@ -1,7 +1,6 @@
 package model
 //model es el dao
 
-import "time"
 
 type Course struct {
 	ID           int64     // Course ID
