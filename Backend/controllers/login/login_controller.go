@@ -1,43 +1,33 @@
-package login
+package loginController
 
 import (
 	"cursos-ucc/dto"
+	"cursos-ucc/services"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func Login(c *gin.Context) {
-	var loginDto dto.LoginDto
+	var loginDto dto.LoginRequest
 	err := c.BindJSON(&loginDto)
 
 	if err != nil {
 		log.Error(err.Error())
-		c.JSON(http.StatusBadRequest, dto.Result{
+		c.JSON(http.StatusBadRequest, dto.LoginResponse{
 			Message: fmt.Sprintf("Invalid request: %s", err.Error()),
 		})
 		return
 	}
 	log.Debug(loginDto)
 
-	var loginResponseDto dto.LoginResponseDto
-	loginResponseDto, err := service.UserService.Login(loginDto)
+	var loginResponseDto dto.LoginResponse
+	loginResponseDto, err = services.UserService.Login(loginDto)
 
-	// OPCION A
 	token, err := services.Login(loginDto.Email, loginDto.Password)
 
-	if err != nil {
-		if err.Status() == 400 {
-			c.JSON(http.StatusBadRequest, err.Error())
-			return
-		}
-		c.JSON(http.StatusForbidden, err.Error())
-		return
-	}
-	// HASTA ACA A -----
-
-	// OPCION B
 	if err != nil {
 		if err.Error() == "invalid credentials" {
 			c.JSON(http.StatusUnauthorized, dto.Result{
@@ -50,7 +40,6 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
-	// HASTA ACA B ---
 
 	c.JSON(http.StatusOK, loginResponseDto{
 		Token: token,
@@ -58,22 +47,22 @@ func Login(c *gin.Context) {
 }
 
 func Register(c *gin.Context) {
-	var registerDto dto.RegisterDto
-	err := c.BindJSON(&registerDto)
+	var registerRequest dto.RegisterRequest
+	err := c.BindJSON(&registerRequest)
 
 	if err != nil {
 		log.Error(err.Error())
-		c.JSON(http.StatusBadRequest, dto.Result{
-			Message: fmt.Sprintf("Invalid request: %s", err.Error()),
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": fmt.Sprintf("Invalid request: %s", err.Error()),
 		})
 		return
 	}
-	log.Debug(registerDto)
+	log.Debug(registerRequest)
 
-	createdUser, er := service.RegisterService.InsertUser(registerDto)
+	createdUser, er := services.RegisterService.InsertUser(registerRequest)
 	if er != nil {
-		c.JSON(er.Status(), dto.Result{
-			Message: fmt.Sprintf("Error creating user: %s", er.Error()),
+		c.JSON(er.Status(), gin.H{
+			"message": fmt.Sprintf("Error creating user: %s", er.Error()),
 		})
 		return
 	}

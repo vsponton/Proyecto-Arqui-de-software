@@ -2,16 +2,6 @@ package dto
 
 //dto es domain
 
-// PANTALLA DE INICIO - HOME
-
-type CourseResponse_Basic struct {
-	ID_Course int64  `json:"id"`
-	Title     string `json:"title"`
-	Category  string `json:"category"`
-	ImageURL  string `json:"image_url"`
-}
-
-type CoursesResponse_Basic []CourseResponse_Basic // si está en plural son muchos
 
 type CoursesResponse_Full []CourseResponse_Full // si está en plural son muchos
 

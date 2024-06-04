@@ -1,4 +1,4 @@
-package users
+package usersController
 
 import (
 	"cursos-ucc/dto"
@@ -34,7 +34,7 @@ func GetUserByEmail(c *gin.Context) {
 
 	var UsersResponse dto.UsersResponse
 
-	UsersResponse, err := service.UserService.searchByEmail(email)
+	UsersResponse, err := service.UserService.SearchByEmail(email)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
@@ -42,6 +42,25 @@ func GetUserByEmail(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, UsersResponse)
+}
+
+// GenerateToken handles the token generation.
+func GenerateToken(c *gin.Context) {
+
+	var request users.TokenRequest
+
+	if err := c.BindJSON(&request); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		return
+	}
+
+	tokenString, err := service.UserService.GenerateJWT(request.Username)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error generating token"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": tokenString})
 }
 
 ///////////////////

@@ -1,6 +1,10 @@
 package app
 
 import (
+	courseController "cursos-ucc/controllers/courses"
+	loginController "cursos-ucc/controllers/login"
+	userController "cursos-ucc/controllers/users"
+
 	log "github.com/sirupsen/logrus"
 )
 

@@ -1,4 +1,4 @@
-package router
+package app
 
 import (
 	cors "github.com/gin-contrib/cors"

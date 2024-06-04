@@ -7,7 +7,7 @@ type User struct {
 	Email        string    // User Email
 	PasswordHash string    // User Password Hash
 	Type         string    // User Type. Allowed values: admin, normal
-	Name         string    //User Name
+	FirstName    string    //User Name
 	LastName     string    //User LastName 
 }
 

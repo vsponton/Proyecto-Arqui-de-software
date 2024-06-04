@@ -1,14 +1,13 @@
 package main
 
 import (
-	"backend/app"
+	"cursos-ucc/app"
+
 	"github.com/gin-gonic/gin"
 )
-func main(){
+
+func main() {
 	engine := gin.New()
 	app.MapRoutes(engine)
 	engine.Run(":8080")
 }
-
-
-

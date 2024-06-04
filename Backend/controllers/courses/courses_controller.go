@@ -1,16 +1,19 @@
-package courses
+package coursesController
 
 import (
 	"cursos-ucc/dto"
 	"net/http"
 	"strconv"
+	
+
+	"github.com/gin-gonic/gin"
 )
 
 func GetCourseByIdUser(c *gin.Context) {
 
 	id, _ := strconv.Atoi(c.Param("id_user"))
 
-	var coursesDto dto.CoursesDto
+	var coursesDto dto.CoursesResponse_Full
 	coursesDto, err := service.CourseService.GetCourseByIdUser(id)
 
 	if err != nil {
@@ -70,11 +73,11 @@ func GetCourseByDescription(c *gin.Context) {
 }
 
 func PostCourse(c *gin.Context) {
-	var courseDto dto.CourseDto
+	var courseDto dto.CourseResponse_Full
 	err := c.BindJSON(&courseDto)
 
 	if err != nil {
-		log.Error(err.Error())
+		//log.Error(err.Error())
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -90,12 +93,12 @@ func PostCourse(c *gin.Context) {
 }
 
 func PutCourse(c *gin.Context) {
-	var courseDto dto.CourseDto
+	var courseDto dto.CourseRequest_Registration
 
 	err := c.BindJSON(&courseDto)
 
 	if err != nil {
-		log.Error(err.Error())
+		//log.Error(err.Error())
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
@@ -111,36 +114,18 @@ func PutCourse(c *gin.Context) {
 
 }
 
-/*
-func DeleteCourse(c *gin.Context) {
-	var courseDto dto.CourseDto
-
-	err := c.BindJSON(&courseDto)
-
-	if err != nil {
-		log.Error(err.Error())
-		c.JSON(http.StatusBadRequest, err.Error())
-		return
-	}
-
-	courseDto, err := service.CourseService.DeleteCourse(courseDto)
-
-	c.JSON(http.StatusCreated, courseDto)
-}
-*/
-
 func DeleteCourse(c *gin.Context) {
 	idParam := c.Param("id")
 	courseID, err := strconv.Atoi(idParam)
 	if err != nil {
-		log.Error("Invalid course ID: " + idParam)
+		//log.Error("Invalid course ID: " + idParam)
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid course ID"})
 		return
 	}
 
 	err = service.CourseService.DeleteCourse(courseID)
 	if err != nil {
-		log.Error(err.Error())
+		//log.Error(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
