@@ -1,13 +1,12 @@
 package db
 
 import (
-	"cursos-ucc/model"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
-	"cursos-ucc/clients/user"  
-    "cursos-ucc/clients/course"
+
+	"cursos-ucc/clients/user"
+	"cursos-ucc/clients/course"
 )
 
 var (

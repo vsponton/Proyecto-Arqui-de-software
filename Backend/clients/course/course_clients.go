@@ -2,10 +2,14 @@ package clients
 
 import (
 	"cursos-ucc/dto"
-	"cursos-ucc/model"
+	//"cursos-ucc/logging/logging.go"
+
 	error "cursos-ucc/utils/errors"
-	"fmt"
+
+	"github.com/jinzhu/gorm"
 )
+
+var Db *gorm.DB
 
 type CourseClientInterface interface {
 	GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError)
@@ -19,62 +23,60 @@ type CourseClientInterface interface {
 
 type courseClient struct{}
 
-var CourseClient CourseClientInterface = &CoursesClient{}
-
-func ConnectDatabase() error {
-	dsn := "root:root@tcp(localhost:3306)/coursesplatform?charset=utf8mb4&parseTime=True&loc=Local"
-	var err error
-	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		return fmt.Errorf("failed to connect database: %w", err)
-	}
-
-	err = db.AutoMigrate(&model.User{}, &model.Course{}, &model.Subscription{})
-	if err != nil {
-		return fmt.Errorf("failed to auto-migrate: %w", err)
-	}
-
-	return nil
-}
+var CourseClient CourseClientInterface = &courseClient{}
 
 // func (c *courseClient) GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError)
 
-func GetCoursesByUserId(query string) ([]model.Course, error) {
-	var courses []model.Course
-	result := db.Where("title LIKE ? OR description LIKE ?", "%"+query+"%", "%"+query+"%").Find(&courses)
+func (c *courseClient) SearchCoursesByTitle(title string) (dto.CoursesResponse_Full, error.ApiError) {
+
+	var course dto.CoursesResponse_Full
+
+	result := Db.Where("title LIKE ? OR description LIKE ?", "%"+query+"%", "%"+query+"%").Find(&course)
+
 	if result.Error != nil {
 		return nil, result.Error
 	}
-	return courses, nil
-}
-
-func SelectCourseByIDUser(id int64) (model.Course, error) {
-	var course dto.CoursesResponse_Full
-	result := db.First(&course, id)
-	if result.Error != nil {
-		return model.Course{}, fmt.Errorf("not found course with ID: %d", id)
-	}
 	return course, nil
-}
 
-func (c *courseClient) SearchCoursesByTitle(title string) (dto.CoursesResponse_Full, error.ApiError) {
+	log.Debug("Course", course)
 
 	return dto.CoursesResponse_Full{}, nil
 }
 
 func (c *courseClient) SearchCoursesByCategory(category string) (dto.CoursesResponse_Full, error.ApiError) {
 
+	var course dto.CoursesResponse_Full
+
+	result := Db.Where("title LIKE ? OR description LIKE ?", "%"+query+"%", "%"+query+"%").Find(&course)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return course, nil
+
+	log.Debug("Course", course)
+
 	return dto.CoursesResponse_Full{}, nil
 }
 
 func (c *courseClient) SearchCoursesByDescription(description string) (dto.CoursesResponse_Full, error.ApiError) {
 
+	var course dto.CoursesResponse_Full
+
+	result := Db.Where("title LIKE ? OR description LIKE ?", "%"+query+"%", "%"+query+"%").Find(&course)
+
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return course, nil
+
+	log.Debug("Course", course)
+
 	return dto.CoursesResponse_Full{}, nil
 }
 
-func (c *courseClient) CreateCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError) {
+func (c *courseClient) CreateCourse(course dto.CoursesResponse_Full) (dto.CoursesResponse_Full, error.ApiError) {
 
-	return course, nil
 }
 
 func (c *courseClient) UpdateCourse(course dto.CourseRequest_Registration) (dto.CourseResponse_Full, error.ApiError) {

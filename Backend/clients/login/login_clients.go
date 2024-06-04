@@ -4,8 +4,11 @@ import (
 	"cursos-ucc/model"
 	"fmt"
 	"time"
+	"github.com/jinzhu/gorm"
 	
 )
+
+var Db *gorm.DB
 
 type userClient struct{}
 
@@ -31,7 +34,7 @@ func Login(userID int64, courseID int64) error {
 func Register(userID int64, courseID int64) error {
 
 	var login model.Subscription
-	result := db.Where("user_id = ? AND course_id = ?", userID, courseID).First(&subscription)
+	result := Db.Where("user_id = ? AND course_id = ?", userID, courseID).First(&subscription)
 	if result.Error == nil {
 		return fmt.Errorf("user %d is already subscribed to course %d", userID, courseID)
 	}
@@ -43,7 +46,7 @@ func Register(userID int64, courseID int64) error {
 		LastUpdated:  time.Now().UTC(),
 	}
 
-	result = db.Create(&subscription)
+	result = Db.Create(&subscription)
 	if result.Error != nil {
 		return result.Error
 	}

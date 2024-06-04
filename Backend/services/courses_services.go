@@ -1,7 +1,8 @@
 package services
 
 import (
-	clients "cursos-ucc/clients/user"
+	clients "cursos-ucc/clients/course"
+
 	"cursos-ucc/dto"
 
 	"cursos-ucc/logging"
