@@ -11,3 +11,5 @@ type Course struct {
 	Duration     int64    // Course duration
 	Requirements string   //Course requirements
 }
+
+type Courses []Course

@@ -97,7 +97,7 @@ func PostCourse(c *gin.Context) {
 }
 
 func PutCourse(c *gin.Context) {
-	var courseDto dto.CourseRequest_Registration
+	var courseDto dto.CourseResponse_Full
 
 	err := c.BindJSON(&courseDto)
 
