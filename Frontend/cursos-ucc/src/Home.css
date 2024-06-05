@@ -17,12 +17,13 @@ body {
 .sidebar {
     width: 20%;
     padding: 20px;
-    background-color: transparent; /* Asegúrate de que no tenga fondo */
+    background-color: transparent; 
 }
 
 .admin {
     font-weight: white;
     margin-bottom: 20px;
+    font-weight: bold;
 }
 
 .menu-item {
@@ -56,6 +57,8 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    font-weight: bold
+
 }
 
 .course-item {
@@ -96,6 +99,7 @@ body {
     justify-content: space-between;
 }
 
+/*
 .add-delete-buttons button {
     border: 1px solid black;
     background: none;
@@ -104,7 +108,7 @@ body {
     padding: 10px;
     margin-bottom: 20px;
 }
-
+*/
 .description {
     text-align: left;
     font-size: 16px;
@@ -133,14 +137,14 @@ body {
     transition-delay: 0.3s;
 }
 
+
 .containerAlum {
     display: flex;
     justify-content: space-between;
     padding: 20px;
-    border: 1px solid black;
-    height: 100vh;
-    background-color: transparent; /* Asegúrate de que no tenga fondo */
+    background-color: transparent; 
 }
+
 
 .left-section, .right-section {
     width: 45%;
@@ -165,7 +169,7 @@ body {
     border: 1px solid black;
     padding: 10px;
     border-radius: 20px;
-    background-color: #e0e0e0;
+    background-color: gray;
     cursor: pointer;
 }
 
@@ -215,4 +219,72 @@ body {
     margin-top: 20px;
     display: block;
     width: 100%;
+}
+
+
+.Course {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.Course:hover {
+    transform: scale(1.02);
+}
+
+.Course-image {
+    width: 128px;
+    height: auto;
+}
+
+.course-item {
+    padding: 20px;
+    text-align: center;
+}
+
+.course-item div {
+    margin-bottom: 10px;
+}
+
+.course-category, .course-duration, .course-instructor, .course-requirements {
+    margin: 5px 0;
+    color: #555;
+}
+
+.course-category {
+    font-weight: bold;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.actions button {
+    background: #007bff;
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.actions button.edit {
+    background: #ffc107;
+}
+
+.actions button:hover {
+    background: #0056b3;
+}
+
+.actions button.edit:hover {
+    background: #e0a800;
 }
