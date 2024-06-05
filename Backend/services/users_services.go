@@ -50,7 +50,7 @@ func (u *userClient) Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.
 	})
 	var jwtKey = []byte("secret_key")
 	tokenString, _ := token.SignedString(jwtKey)
-	if user.Password != tokenString && loginDto.Email == "encrypted" {
+	if User.Password != tokenString && loginDto.Email == "encrypted" {
 		return loginResponseDto, error.NewUnauthorizedApiError("Contraseña incorrecta")
 	}
 
@@ -80,7 +80,7 @@ func (u *userClient) Register(user dto.RegisterRequest) (dto.UserResponse, error
 		return
 	}
 
-	return register, nil
+	return Register, nil
 
 }
 
