@@ -1,9 +1,7 @@
 package clients
 
 import (
-	"cursos-ucc/dto"
-	//"cursos-ucc/logging/logging.go"
-
+	"cursos-ucc/model"
 	error "cursos-ucc/utils/errors"
 
 	"github.com/jinzhu/gorm"
@@ -11,139 +9,119 @@ import (
 
 var Db *gorm.DB
 
+type courseClient struct{}
+
 type CourseClientInterface interface {
-	GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError)
-	SearchCoursesByTitle(title string) (dto.CoursesResponse_Full, error.ApiError)
-	SearchCoursesByCategory(category string) (dto.CoursesResponse_Full, error.ApiError)
-	SearchCoursesByDescription(description string) (dto.CoursesResponse_Full, error.ApiError)
-	CreateCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError)
-	UpdateCourse(course dto.CourseRequest_Registration) (dto.CourseResponse_Full, error.ApiError)
+	GetCoursesByUserId(userId int) (model.Courses, error.ApiError)
+	SearchCoursesByTitle(title string) (model.Courses, error.ApiError)
+	SearchCoursesByCategory(category string) (model.Courses, error.ApiError)
+	SearchCoursesByDescription(description string) (model.Courses, error.ApiError)
+	CreateCourse(course model.Course) (model.Course, error.ApiError)
+	UpdateCourse(course model.Course) (model.Course, error.ApiError)
 	DeleteCourse(courseId int) error.ApiError
 }
 
-type courseClient struct{}
 
-var CourseClient CourseClientInterface = &courseClient{}
+var (
+	CourseClient CourseClientInterface
+)
 
-// func (c *courseClient) GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError)
-
-func (c *courseClient) SearchCoursesByTitle(title string) (dto.CoursesResponse_Full, error.ApiError) {
-
-	var course dto.CoursesResponse_Full
-
-	result := Db.Where("title LIKE ? OR description LIKE ?", "%"+query+"%", "%"+query+"%").Find(&course)
-
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return course, nil
-
-	log.Debug("Course", course)
-
-	return dto.CoursesResponse_Full{}, nil
+func init(){
+	CourseClient = &courseClient{}
 }
 
-func (c *courseClient) SearchCoursesByCategory(category string) (dto.CoursesResponse_Full, error.ApiError) {
+func (c *courseClient) GetCoursesByUserId(userId int) (model.Courses, error.ApiError){
+	var course model.Courses
 
-	var course dto.CoursesResponse_Full
-
-	result := Db.Where("title LIKE ? OR description LIKE ?", "%"+query+"%", "%"+query+"%").Find(&course)
-
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return course, nil
-
-	log.Debug("Course", course)
-
-	return dto.CoursesResponse_Full{}, nil
-}
-
-func (c *courseClient) SearchCoursesByDescription(description string) (dto.CoursesResponse_Full, error.ApiError) {
-
-	var course dto.CoursesResponse_Full
-
-	result := Db.Where("title LIKE ? OR description LIKE ?", "%"+query+"%", "%"+query+"%").Find(&course)
+	result := Db.Where("id=?", userId).Find(&course)
 
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, error.NewNotFoundApiError("???")
 	}
 	return course, nil
-
-	log.Debug("Course", course)
-
-	return dto.CoursesResponse_Full{}, nil
 }
 
-func (c *courseClient) CreateCourse(course dto.CourseRequest_Registration) (dto.CoursesResponse_Full, error.ApiError) {
+func (c *courseClient) SearchCoursesByTitle(title string) (model.Courses, error.ApiError) {
+
+	var course model.Courses
+
+	result := Db.Where("title LIKE ?", "%"+title+"%").Find(&course)
+
+	if result.Error != nil {
+		return nil, error.NewNotFoundApiError("Error!")
+	}
+	return course, nil
+}
+
+func (c *courseClient) SearchCoursesByCategory(category string) (model.Courses, error.ApiError) {
+
+	var course model.Courses
+
+	result := Db.Where("category LIKE ?", "%"+category+"%").Find(&course)
+
+	if result.Error != nil {
+		return nil, error.NewNotFoundApiError("???")
+	}
+	return course, nil
+}
+
+func (c *courseClient) SearchCoursesByDescription(description string) (model.Courses, error.ApiError) {
+
+	var course model.Courses
+
+	result := Db.Where("description LIKE ?", "%"+description+"%").Find(&course)
+
+	if result.Error != nil {
+		return nil, error.NewNotFoundApiError("???")
+	}
+	return course, nil
+}
+
+func (c *courseClient) CreateCourse(course model.Course) (model.Course, error.ApiError) {
 	result := Db.Create(&course)
 	if result.Error != nil {
-		//return dto.CourseResponse_Full{}, errors.NewInternalServerError("error creating course")
+		return model.Course{}, error.NewInternalServerApiError("error creating course", result.Error)
 	}
-	return dto.CoursesResponse_Full{}, nil
+	return model.Course{}, nil
 
 }
 
-func (c *courseClient) UpdateCourse(course dto.CourseRequest_Registration) (dto.CourseResponse_Full, error.ApiError) {
+func (c *courseClient) UpdateCourse(course model.Course) (model.Course, error.ApiError) {
 
-	var existingCourse dto.CourseRequest_Registration
+	var existingCourse model.Course
 
 	// Verificar si el curso existe
-	if err := Db.Where("id = ?", ID_Course).First(&existingCourse).Error; err != nil {
+	if err := Db.Where("id = ?", course.ID).First(&existingCourse).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			return dto.CourseResponse_Full{}, errors.NewNotFoundError("course not found")
+			return model.Course{}, error.NewNotFoundApiError("course not found")
 		}
-		return dto.CourseResponse_Full{}, errors.NewInternalServerError("error finding course")
+		return model.Course{}, error.NewInternalServerApiError("error finding course", err)
 	}
 
 	// Actualizar el curso
 	result := Db.Model(&existingCourse).Updates(course)
 	if result.Error != nil {
-		return dto.CourseResponse_Full{}, errors.NewInternalServerError("error updating course")
+		return model.Course{}, error.NewInternalServerApiError("error updating course", result.Error)
 	}
 
 	// Retornar el curso actualizado
-	return existingCourse.ToResponse(), nil
+	return model.Course{}, nil
 }
 
 func (c *courseClient) DeleteCourse(courseId int) error.ApiError {
-	var course dto.CourseRequest_Registration
+	var course model.Course
 
 	// Verificar si el curso existe
 	if err := Db.Where("id = ?", courseId).First(&course).Error; err != nil {
 		if gorm.IsRecordNotFoundError(err) {
-			return errors.NewNotFoundError("course not found")
+			return error.NewNotFoundApiError("course not found")
 		}
-		return errors.NewInternalServerError("error finding course")
+		return error.NewInternalServerApiError("error finding course", err)
 	}
 
 	// Eliminar el curso
 	if err := Db.Delete(&course).Error; err != nil {
-		return errors.NewInternalServerError("error deleting course")
+		return error.NewInternalServerApiError("error deleting course", err)
 	}
 	return nil
 }
-
-/*
-func InsertSubscription(userID int64, courseID int64) error {
-	var subscription model.Subscription
-	result := db.Where("user_id = ? AND course_id = ?", userID, courseID).First(&subscription)
-	if result.Error == nil {
-		return fmt.Errorf("user %d is already subscribed to course %d", userID, courseID)
-	}
-
-	subscription = model.Subscription{
-		UserID:       userID,
-		CourseID:     courseID,
-		CreationDate: time.Now().UTC(),
-		LastUpdated:  time.Now().UTC(),
-	}
-
-	result = db.Create(&subscription)
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-*/
