@@ -5,9 +5,9 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
 
-	"cursos-ucc/clients/user"
-	"cursos-ucc/clients/course"
-	"cursos-ucc/clients/model"
+	// "cursos-ucc/clients/user"
+	// "cursos-ucc/clients/course/course_clients.go"
+	"cursos-ucc/model"
 )
 
 var (
