@@ -1,4 +1,4 @@
-package coursesController
+package controllers
 
 import (
 	"cursos-ucc/dto"

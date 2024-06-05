@@ -1,7 +1,7 @@
 package services
 
 import (
-	"cursos-ucc/model"
+	"cursos-ucc/dto"
 	error "cursos-ucc/utils/errors"
 
 	"github.com/jinzhu/gorm"
@@ -21,16 +21,15 @@ type CourseClientInterface interface {
 	DeleteCourse(courseId int) error.ApiError
 }
 
-
 var (
 	CourseClient CourseClientInterface
 )
 
-func init(){
+func init() {
 	CourseClient = &courseClient{}
 }
 
-func (c *courseClient) GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError){
+func (c *courseClient) GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError) {
 	var course dto.CoursesResponse_Full
 
 	result := Db.Where("id=?", userId).Find(&course)
@@ -178,7 +177,7 @@ type CourseServiceInterface interface {
 }
 
 var (
-	CourseService CourseServiceInterface 
+	CourseService CourseServiceInterface
 )
 
 func initCourseService(courseClient clients.CourseClientInterface) CourseServiceInterface {

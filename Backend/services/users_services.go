@@ -1,11 +1,11 @@
-package users
+package services
 
 import (
 	"cursos-ucc/dto"
 	"cursos-ucc/model"
 	error "cursos-ucc/utils/errors"
-	"fmt"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/jinzhu/gorm"
 )
 
@@ -14,7 +14,7 @@ var Db *gorm.DB
 type userClient struct{}
 
 type UserClientInterface interface {
-	Login(ID_Course int64) (dto.LoginResponse, error.ApiError)
+	Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.ApiError)
 	Register(user dto.RegisterRequest) (dto.UserResponse, error.ApiError)
 	GetUserById(userId int64) (dto.UserResponse, error.ApiError)
 	GetUserByEmail(email string) (dto.UserResponse, error.ApiError)
@@ -30,36 +30,37 @@ func init() {
 
 // LOG IN
 
-func (u *userClient)Login(userID int64) (dto.LoginResponse, error.ApiError) {
-	var user dto.LoginResponse
+func (u *userClient) Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.ApiError) {
 
-	user, err := u.userClient.GetCourseByIdUser(loginDto.id_user)
-	var loginResponseDto dto.LoginResponseDto
-	loginResponseDto.UserId = -1
+	var loginResponseDto dto.LoginResponse
+	loginResponseDto.Token = ""
 	if err != nil {
-		return loginResponseDto, e.NewBadRequestApiError("Usuario no encontrado")
+		return loginResponseDto, error.NewBadRequestApiError("Usuario no encontrado")
 	}
-	if user.Password != loginDto.Password && loginDto.Username != "encrypted" {
-		return loginResponseDto, e.NewUnauthorizedApiError("Contraseña incorrecta")
+
+	// llamada al back para pedirle el usuario por usuario, que nos de la contraseña y comparar
+
+	if loginDto.Password != loginDto.Password && loginDto.Email != "encrypted" {
+		return loginResponseDto, error.NewUnauthorizedApiError("Contraseña incorrecta")
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": loginDto.Username,
+		"username": loginDto.Email,
 		"pass":     loginDto.Password,
 	})
 	var jwtKey = []byte("secret_key")
 	tokenString, _ := token.SignedString(jwtKey)
-	if user.Password != tokenString && loginDto.Username == "encrypted" {
-		return loginResponseDto, e.NewUnauthorizedApiError("Contraseña incorrecta")
+	if user.Password != tokenString && loginDto.Email == "encrypted" {
+		return loginResponseDto, error.NewUnauthorizedApiError("Contraseña incorrecta")
 	}
 
-	loginResponseDto.UserId = user.UserId
+	//	loginResponseDto.UserId = user.UserId
 	loginResponseDto.Token = tokenString
-	log.Debug(loginResponseDto)
+	//	log.Debug(loginResponseDto)
 	return loginResponseDto, nil
 }
 
-func (u *userClient)Register(user dto.RegisterRequest) (dto.UserResponse, error.ApiError) {
+func (u *userClient) Register(user dto.RegisterRequest) (dto.UserResponse, error.ApiError) {
 
 	var register model.User
 	//var reg dto.RegisterRequest
@@ -74,20 +75,18 @@ func (u *userClient)Register(user dto.RegisterRequest) (dto.UserResponse, error.
 	register.Email = user.Email
 	register.PasswordHash = user.Password
 
-	
 	result = Db.Create(&register)
 	if result.Error != nil {
-		return 
+		return
 	}
 
-
-	return registerDto, nil
+	return register, nil
 
 }
 
 // GET INFO ABOUT THE USER
 
-func (u *userClient)GetUserById(id int64) (dto.UserResponse, error.ApiError) {
+func (u *userClient) GetUserById(id int64) (dto.UserResponse, error.ApiError) {
 	var user dto.UserResponse
 	result := Db.First(&user, id)
 	if result.Error != nil {
@@ -96,7 +95,7 @@ func (u *userClient)GetUserById(id int64) (dto.UserResponse, error.ApiError) {
 	return user, nil
 }
 
-func (u *userClient)GetUserByEmail(email string) (dto.UserResponse, error.ApiError) {
+func (u *userClient) GetUserByEmail(email string) (dto.UserResponse, error.ApiError) {
 	var user dto.UserResponse
 	result := Db.Where("email = ?", email).First(&user)
 	if result.Error != nil {
@@ -104,14 +103,6 @@ func (u *userClient)GetUserByEmail(email string) (dto.UserResponse, error.ApiErr
 	}
 	return user, nil
 }
-
-
-
-
-
-
-
-
 
 /*
 package services

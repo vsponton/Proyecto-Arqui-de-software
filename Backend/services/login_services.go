@@ -1,7 +1,6 @@
 package services
 
 import (
-	"cursos-ucc/dto"
 	"cursos-ucc/model"
 
 	"github.com/golang-jwt/jwt"
