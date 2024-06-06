@@ -4,10 +4,11 @@ import (
 	"cursos-ucc/dto"
 	error "cursos-ucc/utils/errors"
 
+	//"cursos-ucc/db"
 	"github.com/jinzhu/gorm"
 )
 
-var Db *gorm.DB
+//var Db *gorm.DB
 
 type courseClient struct{}
 
@@ -47,7 +48,7 @@ func (c *courseClient) SearchCoursesByTitle(title string) (dto.CoursesResponse_F
 	result := Db.Where("title LIKE ?", "%"+title+"%").Find(&course)
 
 	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("Error!")
+		return nil, error.NewNotFoundApiError("Couldn't find any course that matchs the title!")
 	}
 	return course, nil
 }
@@ -59,7 +60,7 @@ func (c *courseClient) SearchCoursesByCategory(category string) (dto.CoursesResp
 	result := Db.Where("category LIKE ?", "%"+category+"%").Find(&course)
 
 	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("???")
+		return nil, error.NewNotFoundApiError("Couldn't find any course that matchs the category")
 	}
 	return course, nil
 }
@@ -71,7 +72,7 @@ func (c *courseClient) SearchCoursesByDescription(description string) (dto.Cours
 	result := Db.Where("description LIKE ?", "%"+description+"%").Find(&course)
 
 	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("???")
+		return nil, error.NewNotFoundApiError("Couldn't find any course that matchs the description")
 	}
 	return course, nil
 }

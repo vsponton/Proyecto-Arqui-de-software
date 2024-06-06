@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-//var Db *gorm.DB
+var Db *gorm.DB
 
 type userClient struct{}
 
@@ -32,10 +32,11 @@ func init() {
 
 func (u *userClient) Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.ApiError) {
 
-	var user model.Users
+	var user model.User
 
 	var loginResponseDto dto.LoginResponse
 	loginResponseDto.Token = ""
+	err := Db.Where("email = ?", loginDto.Email).First(&user).Error
 	if err != nil {
 		return loginResponseDto, error.NewBadRequestApiError("Usuario no encontrado")
 	}
@@ -52,7 +53,7 @@ func (u *userClient) Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.
 	})
 	var jwtKey = []byte("secret_key")
 	tokenString, _ := token.SignedString(jwtKey)
-	if user.Password != tokenString && loginDto.Email == "encrypted" {
+	if user.PasswordHash != tokenString && loginDto.Email == "encrypted" {
 		return loginResponseDto, error.NewUnauthorizedApiError("Contraseña incorrecta")
 	}
 
@@ -65,11 +66,11 @@ func (u *userClient) Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.
 func (u *userClient) Register(user dto.RegisterRequest) (dto.UserResponse, error.ApiError) {
 
 	var register model.User
-	//var reg dto.RegisterRequest
+	//var hello dto.RegisterRequest
 
 	result := Db.Where("email = ? ", user.Email).First(&register)
 	if result.Error == nil {
-		return dto.RegisterResponse{}, error.NewBadRequestApiError("Already registered")
+		return dto.UserResponse{}, error.NewBadRequestApiError("Already registered")
 	}
 
 	register.FirstName = user.Firstname
@@ -79,10 +80,10 @@ func (u *userClient) Register(user dto.RegisterRequest) (dto.UserResponse, error
 
 	result = Db.Create(&register)
 	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("???") 
+		return dto.UserResponse{}, error.NewBadRequestApiError("error creating user")
 	}
 
-	return register, nil
+	return dto.UserResponse{}, nil
 
 }
 
@@ -92,55 +93,20 @@ func (u *userClient) GetUserById(id int64) (dto.UserResponse, error.ApiError) {
 	var user dto.UserResponse
 	result := Db.First(&user, id)
 	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("???")
+		return dto.UserResponse{}, error.NewBadRequestApiError("User not found")
 	}
 	return user, nil
 }
 
 func (u *userClient) GetUserByEmail(email string) (dto.UserResponse, error.ApiError) {
+
 	var user dto.UserResponse
-	result := Db.Where("email = ?", email).First(&user)
+
+	result := Db.Where("email = ?", "%"+email+"%").First(&user)
+
 	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("???")
+
+		return dto.UserResponse{}, error.NewBadRequestApiError("User not found")
 	}
 	return user, nil
 }
-
-/*
-package services
-
-import (
-	client "cursos-ucc/clients/user"
-	"cursos-ucc/dto"
-
-	"github.com/golang-jwt/jwt"
-
-	error "cursos-ucc/utils/errors"
-
-	log "github.com/sirupsen/logrus"
-)
-
-type userService struct {
-	userClient client.UserClientInterface
-}
-
-type userServiceInterface interface {
-	GetUserById(id int) (dto.UserResponse, error.ApiError)
-	GetUserByEmail() (dto.UserResponse, error.ApiError)
-	//Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.ApiError)
-}
-
-var (
-	UserService userServiceInterface
-)
-
-func initUserService(userClient client.UserServiceInterface) userServiceInterface {
-	service := new(userService)
-	service.userClient = userClient
-	return service
-}
-
-func init() {
-	UserService = initUserService(client.UserClient)
-}
-*/

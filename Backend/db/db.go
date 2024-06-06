@@ -4,14 +4,10 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
-
-	// "cursos-ucc/clients/user"
-	// "cursos-ucc/clients/course/course_clients.go"
-	"cursos-ucc/model"
 )
 
 var (
-	db  *gorm.DB
+	Db  *gorm.DB
 	err error
 )
 
@@ -23,7 +19,7 @@ func init() {
 	DBHost := "localhost" //host de la base de datos. hbitualmente 127.0.0.1
 	// ------------------------
 
-	db, err = gorm.Open("mysql", DBUser+":"+DBPass+"@tcp("+DBHost+":3306)/"+DBName+"?charset=utf8&parseTime=True")
+	Db, err = gorm.Open("mysql", DBUser+":"+DBPass+"@tcp("+DBHost+":3306)/"+DBName+"?charset=utf8&parseTime=True")
 
 	if err != nil {
 		log.Info("Connection Failed to Open")
@@ -33,10 +29,12 @@ func init() {
 	}
 
 	// We need to add all CLients that we build
-	userClient.Db = db
-	courseClient.Db = db
+	userClient.Db = Db
+	courseClient.Db =Db
 }
 
+////// chat
+/*
 func StartDbEngine() {
 	// We need to migrate all classes model.
 	db.AutoMigrate(&model.courses{})
@@ -45,3 +43,4 @@ func StartDbEngine() {
 
 	log.Info("Finishing Migration Database Tables")
 }
+*/
