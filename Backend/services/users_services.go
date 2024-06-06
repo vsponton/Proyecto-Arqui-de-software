@@ -9,7 +9,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var Db *gorm.DB
+//var Db *gorm.DB
 
 type userClient struct{}
 
@@ -32,6 +32,8 @@ func init() {
 
 func (u *userClient) Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.ApiError) {
 
+	var user model.Users
+
 	var loginResponseDto dto.LoginResponse
 	loginResponseDto.Token = ""
 	if err != nil {
@@ -50,7 +52,7 @@ func (u *userClient) Login(loginDto dto.LoginRequest) (dto.LoginResponse, error.
 	})
 	var jwtKey = []byte("secret_key")
 	tokenString, _ := token.SignedString(jwtKey)
-	if User.Password != tokenString && loginDto.Email == "encrypted" {
+	if user.Password != tokenString && loginDto.Email == "encrypted" {
 		return loginResponseDto, error.NewUnauthorizedApiError("Contraseña incorrecta")
 	}
 
@@ -77,10 +79,10 @@ func (u *userClient) Register(user dto.RegisterRequest) (dto.UserResponse, error
 
 	result = Db.Create(&register)
 	if result.Error != nil {
-		return
+		return nil, error.NewNotFoundApiError("???") 
 	}
 
-	return Register, nil
+	return register, nil
 
 }
 
