@@ -30,44 +30,40 @@ function getCursoById(id){
 }
 
 const Courses = () => {
-    const[course, setCourse] =useState({});
+    const [course, setCourse] = useState({});
 
-    const loadCourse = () =>{
+    const loadCourse = () => {
         let curso = getCursoById(5);
         setCourse(curso);
     }
 
-    const showCourses= () =>{
-        return(
-            <div>
-                <div class="course-title">
+    const showCourses = () => {
+        return (
+            <div className="course-container">
+                <div className="course-title">
                     {course.title}
                 </div>
-                <div class="course-info">
-                    <div>
-                        <h4>Descripcion:</h4>
-                        <p class="course-description">{course.description}</p>
+                <div className="course-info">
+                    <div className="course-description-container">
+                        <h3>Descripción:</h3>
+                        <p className="course-description">{course.description}</p>
                     </div>
-                    <div>
-                        ICONO
-                        <p class="course-instructor">{course.instructor}</p>
+                    <div className="course-instructor">
+                        <p>{course.instructor}</p>
                     </div>
-                    <div>
-                        ICONO
-                        <p class="course-duration">{course.duration}</p>
+                    <div className="course-duration">
+                        <p>{course.duration}</p>
                     </div>
-                    <div>
-                        <div class="course-requirements-container">
-                            <h4>Requisitos</h4>
-                            <p class="course-requirements">{course.requirements}</p>
-                        </div>
-                        <div class="course-image">
-                            <img src={course.image_url} alt={course.title}></img>
-                        </div>
+                    <div className="course-requirements-container">
+                        <h4>Requisitos</h4>
+                        <p className="course-requirements">{course.requirements}</p>
+                    </div>
+                    <div className="course-image">
+                        <img src={course.image_url} alt={course.title}></img>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 
     return (
@@ -75,7 +71,7 @@ const Courses = () => {
             <button onClick={loadCourse}>CARGAR</button>
             {showCourses()}
         </div>
-    )
+    );
 }
 
 export default Courses;
