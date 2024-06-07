@@ -2,17 +2,23 @@ package services
 
 import (
 	"cursos-ucc/dto"
+	"cursos-ucc/model"
 	error "cursos-ucc/utils/errors"
 
 	//"cursos-ucc/db"
+	courseclient "cursos-ucc/clients/course"
+
 	"github.com/jinzhu/gorm"
 )
 
-//var Db *gorm.DB
+var Db *gorm.DB
 
-type courseClient struct{}
+type courseService struct {
+	courseClient courseclient.CourseClientInterface
+}
 
-type CourseClientInterface interface {
+type CourseServiceInterface interface {
+	GetCourses() (dto.CoursesResponse_Full, error.ApiError)
 	GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError)
 	SearchCoursesByTitle(title string) (dto.CoursesResponse_Full, error.ApiError)
 	SearchCoursesByCategory(category string) (dto.CoursesResponse_Full, error.ApiError)
@@ -23,61 +29,136 @@ type CourseClientInterface interface {
 }
 
 var (
-	CourseClient CourseClientInterface
+	CourseService CourseServiceInterface
 )
 
 func init() {
-	CourseClient = &courseClient{}
+	CourseService = &courseService{courseclient.CourseClient}
 }
 
-func (c *courseClient) GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError) {
-	var course dto.CoursesResponse_Full
+// DEVUELVE TODOS LOS CURSOS
+// router.GET("/course", courseController.GetCourses)
 
-	result := Db.Where("id=?", userId).Find(&course)
+func (c *courseService) GetCourses() (dto.CoursesResponse_Full, error.ApiError) {
 
-	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("???")
+	var coursesDto dto.CoursesResponse_Full
+
+	courses, err := c.courseClient.GetCourses()
+
+	if err != nil {
+		return dto.CoursesResponse_Full{}, err
 	}
-	return course, nil
-}
 
-func (c *courseClient) SearchCoursesByTitle(title string) (dto.CoursesResponse_Full, error.ApiError) {
+	for _, course := range courses {
+		var courseDto dto.CourseResponse_Full
+		// como viene en el dto ---> como va en el model
+		courseDto.ID_Course = course.ID
+		courseDto.Title = course.Title
+		courseDto.Description = course.Description
+		courseDto.Category = course.Category
+		courseDto.ImageURL = course.ImageURL
+		courseDto.Duration = course.Duration
+		courseDto.Requirements = course.Requirements
 
-	var course dto.CoursesResponse_Full
-
-	result := Db.Where("title LIKE ?", "%"+title+"%").Find(&course)
-
-	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("Couldn't find any course that matchs the title!")
+		coursesDto = append(coursesDto, courseDto)
 	}
-	return course, nil
+
+	return coursesDto, nil
 }
 
-func (c *courseClient) SearchCoursesByCategory(category string) (dto.CoursesResponse_Full, error.ApiError) {
+func (c *courseService) GetCoursesByUserId(userId int) (dto.CoursesResponse_Full, error.ApiError) {
 
-	var course dto.CoursesResponse_Full
+	var coursesDto dto.CoursesResponse_Full
+	var courses model.Courses
+	courses, err := c.courseClient.GetCoursesByUserId(userId)
 
-	result := Db.Where("category LIKE ?", "%"+category+"%").Find(&course)
-
-	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("Couldn't find any course that matchs the category")
+	if err != nil {
+		return nil, error.NewNotFoundApiError("Couldn't find courses by that user")
 	}
-	return course, nil
-}
 
-func (c *courseClient) SearchCoursesByDescription(description string) (dto.CoursesResponse_Full, error.ApiError) {
+	for _, course := range courses {
+		var courseDto dto.CourseResponse_Full
+		courseDto.ID_Course = course.ID
+		courseDto.Title = course.Title
+		courseDto.Description = course.Description
+		courseDto.Category = course.Category
+		courseDto.ImageURL = course.ImageURL
+		courseDto.Duration = course.Duration
+		courseDto.Requirements = course.Requirements
 
-	var course dto.CoursesResponse_Full
-
-	result := Db.Where("description LIKE ?", "%"+description+"%").Find(&course)
-
-	if result.Error != nil {
-		return nil, error.NewNotFoundApiError("Couldn't find any course that matchs the description")
+		coursesDto = append(coursesDto, courseDto)
 	}
-	return course, nil
+
+	return coursesDto, nil
 }
 
-func (c *courseClient) CreateCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError) {
+func (c *courseService) SearchCoursesByTitle(title string) (dto.CoursesResponse_Full, error.ApiError) {
+
+	var coursesDto dto.CoursesResponse_Full
+
+	courses, _ := c.courseClient.SearchCoursesByTitle(title)
+
+	for _, course := range courses {
+		var courseDto dto.CourseResponse_Full
+		courseDto.ID_Course = course.ID
+		courseDto.Title = course.Title
+		courseDto.Description = course.Description
+		courseDto.Category = course.Category
+		courseDto.ImageURL = course.ImageURL
+		courseDto.Duration = course.Duration
+		courseDto.Requirements = course.Requirements
+
+		coursesDto = append(coursesDto, courseDto)
+	}
+
+	return coursesDto, nil
+}
+
+func (c *courseService) SearchCoursesByCategory(category string) (dto.CoursesResponse_Full, error.ApiError) {
+
+	var coursesDto dto.CoursesResponse_Full
+
+	courses, _ := c.courseClient.SearchCoursesByCategory(category)
+
+	for _, course := range courses {
+		var courseDto dto.CourseResponse_Full
+		courseDto.ID_Course = course.ID
+		courseDto.Title = course.Title
+		courseDto.Description = course.Description
+		courseDto.Category = course.Category
+		courseDto.ImageURL = course.ImageURL
+		courseDto.Duration = course.Duration
+		courseDto.Requirements = course.Requirements
+
+		coursesDto = append(coursesDto, courseDto)
+	}
+
+	return coursesDto, nil
+}
+
+func (c *courseService) SearchCoursesByDescription(description string) (dto.CoursesResponse_Full, error.ApiError) {
+
+	var coursesDto dto.CoursesResponse_Full
+
+	courses, _ := c.courseClient.SearchCoursesByDescription(description)
+
+	for _, course := range courses {
+		var courseDto dto.CourseResponse_Full
+		courseDto.ID_Course = course.ID
+		courseDto.Title = course.Title
+		courseDto.Description = course.Description
+		courseDto.Category = course.Category
+		courseDto.ImageURL = course.ImageURL
+		courseDto.Duration = course.Duration
+		courseDto.Requirements = course.Requirements
+
+		coursesDto = append(coursesDto, courseDto)
+	}
+
+	return coursesDto, nil
+}
+
+func (c *courseService) CreateCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError) {
 	result := Db.Create(&course)
 	if result.Error != nil {
 		return dto.CourseResponse_Full{}, error.NewInternalServerApiError("error creating course", result.Error)
@@ -86,7 +167,7 @@ func (c *courseClient) CreateCourse(course dto.CourseResponse_Full) (dto.CourseR
 
 }
 
-func (c *courseClient) UpdateCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError) {
+func (c *courseService) UpdateCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError) {
 
 	var existingCourse dto.CourseResponse_Full
 
@@ -108,7 +189,7 @@ func (c *courseClient) UpdateCourse(course dto.CourseResponse_Full) (dto.CourseR
 	return dto.CourseResponse_Full{}, nil
 }
 
-func (c *courseClient) DeleteCourse(courseId int) error.ApiError {
+func (c *courseService) DeleteCourse(courseId int) error.ApiError {
 	var course dto.CourseRequest_Registration
 
 	// Verificar si el curso existe
@@ -125,132 +206,3 @@ func (c *courseClient) DeleteCourse(courseId int) error.ApiError {
 	}
 	return nil
 }
-
-/*
-func InsertSubscription(userID int64, courseID int64) error {
-	var subscription model.Subscription
-	result := db.Where("user_id = ? AND course_id = ?", userID, courseID).First(&subscription)
-	if result.Error == nil {
-		return fmt.Errorf("user %d is already subscribed to course %d", userID, courseID)
-	}
-
-	subscription = model.Subscription{
-		UserID:       userID,
-		CourseID:     courseID,
-		CreationDate: time.Now().UTC(),
-		LastUpdated:  time.Now().UTC(),
-	}
-
-	result = db.Create(&subscription)
-	if result.Error != nil {
-		return result.Error
-	}
-
-	return nil
-}
-*/
-
-/*
-package services
-
-import (
-	clients "cursos-ucc/clients/course"
-
-	"cursos-ucc/dto"
-
-	"cursos-ucc/logging"
-
-	error "cursos-ucc/utils/errors"
-)
-
-type courseService struct{
-	courseClient clients.CourseClientInterface
-}
-
-type CourseServiceInterface interface {
-	GetCourseByIdUser(userId int) (dto.CoursesResponse_Full, error.ApiError)
-	SearchByTitle(title string) (dto.CoursesResponse_Full, error.ApiError)
-	SearchByCategory(category string) (dto.CoursesResponse_Full, error.ApiError)
-	SearchByDescription(description string) (dto.CoursesResponse_Full, error.ApiError)
-	PostCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError)
-	PutCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError)
-	DeleteCourse(courseId int) error.ApiError
-}
-
-var (
-	CourseService CourseServiceInterface
-)
-
-func initCourseService(courseClient clients.CourseClientInterface) CourseServiceInterface {
-	service := new(courseService)
-	service.courseClient = courseClient
-	return service
-}
-
-func init() {
-	CourseService = initCourseService(clients.CourseClient)
-}
-
-func (s *courseService) GetCourseByIdUser(userId int) (dto.CoursesResponse_Full, error.ApiError) {
-	courses, err := s.courseClient.GetCoursesByUserId(userId) // clients.CourseService ????????
-	if err != nil {
-		logging.Log.Error("Error fetching courses for user ID: ", userId, " Error: ", err)
-		return nil, error.NewInternalServerApiError("Error fetching courses", err)
-	}
-	return courses, nil
-}
-
-func (s *courseService) SearchByTitle(title string) (dto.CoursesResponse_Full, error.ApiError) {
-	courses, err := s.courseClient.SearchCoursesByTitle(title)
-	if err != nil {
-		logging.Log.Error("Error searching courses by title: ", title, " Error: ", err)
-		return nil, error.NewNotFoundApiError("No courses found with title " + title)
-	}
-	return courses, nil
-}
-
-func (s *courseService) SearchByCategory(category string) (dto.CoursesResponse_Full, error.ApiError) {
-	courses, err := s.courseClient.SearchCoursesByCategory(category)
-	if err != nil {
-		logging.Log.Error("Error searching courses by category: ", category, " Error: ", err)
-		return nil, error.NewNotFoundApiError("No courses found with category " + category)
-	}
-	return courses, nil
-}
-
-func (s *courseService) SearchByDescription(description string) (dto.CoursesResponse_Full, error.ApiError) {
-	courses, err := s.courseClient.SearchCoursesByDescription(description)
-	if err != nil {
-		logging.Log.Error("Error searching courses by description: ", description, " Error: ", err)
-		return nil, error.NewNotFoundApiError("No courses found with description " + description)
-	}
-	return courses, nil
-}
-
-func (s *courseService) PostCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError) {
-	newCourse, err := s.courseClient.CreateCourse(course)
-	if err != nil {
-		logging.Log.Error("Error creating course: ", course, " Error: ", err)
-		return dto.CourseResponse_Full{}, error.NewInternalServerApiError("Error creating course", err)
-	}
-	return newCourse, nil
-}
-
-func (s *courseService) PutCourse(course dto.CourseResponse_Full) (dto.CourseResponse_Full, error.ApiError) {
-	updatedCourse, err := s.courseClient.UpdateCourse(course)
-	if err != nil {
-		logging.Log.Error("Error updating course: ", course, " Error: ", err)
-		return dto.CourseResponse_Full{}, error.NewInternalServerApiError("Error updating course", err)
-	}
-	return updatedCourse, nil
-}
-
-func (s *courseService) DeleteCourse(courseId int) error.ApiError {
-	err := s.courseClient.DeleteCourse(courseId)
-	if err != nil {
-		logging.Log.Error("Error deleting course with ID: ", courseId, " Error: ", err)
-		return error.NewInternalServerApiError("Error deleting course", err)
-	}
-	return nil
-}
-*/

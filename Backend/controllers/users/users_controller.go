@@ -20,7 +20,7 @@ func GetUserById(c *gin.Context) {
 	var userDto dto.UserResponse
 
 	//UsersResponse, err := service.UserService.GetUserById(id)
-	err := service.UserService.GetUserById(id)
+	userDto, err := service.UserService.GetUserById(id)
 
 	if err != nil {
 		// log.Error(err.Error())
@@ -35,9 +35,9 @@ func GetUserByEmail(c *gin.Context) {
 	var email string
 	email = c.Param(email)
 
-	var UsersResponse dto.UsersResponse
+	var UsersResponse dto.UserResponse
 
-	UsersResponse, err := service.UserService.SearchByEmail(email)
+	UsersResponse, err := service.UserService.GetUserByEmail(email)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
@@ -48,22 +48,22 @@ func GetUserByEmail(c *gin.Context) {
 }
 
 // GenerateToken handles the token generation.
-func GenerateToken(c *gin.Context) {
+func Login(c *gin.Context) {
 
-	var request users.TokenRequest
+	var request dto.LoginRequest
 
 	if err := c.BindJSON(&request); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
-	tokenString, err := service.UserService.GenerateJWT(request.Username)
+	user, err := service.UserService.Login(request)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Error generating token"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": tokenString})
+	c.JSON(http.StatusOK, user)
 }
 
 ///////////////////

@@ -9,12 +9,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetCourses(c *gin.Context) {
+
+	var coursesDto dto.CoursesResponse_Full
+	coursesDto, err := service.CourseService.GetCourses()
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, coursesDto)
+}
+
 func GetCourseByIdUser(c *gin.Context) {
 
 	id, _ := strconv.Atoi(c.Param("id_user"))
 
 	var coursesDto dto.CoursesResponse_Full
-	coursesDto, err := service.CourseService.GetCourseByIdUser(id)
+	coursesDto, err := service.CourseService.GetCoursesByUserId(id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
@@ -32,7 +45,7 @@ func GetCourseByTitle(c *gin.Context) {
 	title = c.Param(title)
 	var CoursesResponse_Full dto.CoursesResponse_Full
 
-	CoursesResponse_Full, err := service.CourseService.SearchByTitle(title)
+	CoursesResponse_Full, err := service.CourseService.SearchCoursesByTitle(title)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, err.Error())
@@ -48,7 +61,7 @@ func GetCourseByCategory(c *gin.Context) {
 	category = c.Param(category)
 	var CoursesResponse_Full dto.CoursesResponse_Full
 
-	CoursesResponse_Full, err := service.CourseService.SearchByCategory(category)
+	CoursesResponse_Full, err := service.CourseService.SearchCoursesByCategory(category)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, err.Error())
@@ -64,7 +77,7 @@ func GetCourseByDescription(c *gin.Context) {
 	description = c.Param(description)
 	var CoursesResponse_Full dto.CoursesResponse_Full
 
-	CoursesResponse_Full, err := service.CourseService.SearchByDescription(description)
+	CoursesResponse_Full, err := service.CourseService.SearchCoursesByDescription(description)
 
 	if err != nil {
 		c.JSON(http.StatusNotFound, err.Error())
@@ -84,7 +97,7 @@ func PostCourse(c *gin.Context) {
 		return
 	}
 
-	courseDto, er := service.CourseService.PostCourse(courseDto)
+	courseDto, er := service.CourseService.CreateCourse(courseDto)
 
 	if er != nil {
 		c.JSON(er.Status(), er)
@@ -105,7 +118,7 @@ func PutCourse(c *gin.Context) {
 		return
 	}
 
-	courseDto, er := service.CourseService.PutCourse(courseDto)
+	courseDto, er := service.CourseService.UpdateCourse(courseDto)
 
 	if er != nil {
 		c.JSON(er.Status(), er)

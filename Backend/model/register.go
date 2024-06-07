@@ -1,8 +1,9 @@
 package model
 
-
 type Register struct {
-	ID           int64     // Subscription ID
-	UserID       int64     // Subscription User ID
-	CourseID     int64     // Subscription Course ID
+	ID       int `gorm:"primaryKey"`
+	UserID   int `gorm:"primaryKey"` // Subscription User ID
+	CourseID int `gorm:"primaryKey"` // Subscription Course ID
 }
+
+type Registers []Register

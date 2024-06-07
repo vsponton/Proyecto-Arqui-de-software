@@ -5,7 +5,7 @@ type UserRequest_Email struct {
 }
 
 type UserRequest_ID_User struct {
-	ID_User int64 `json:"id_user"`
+	ID_User int `json:"id_user"`
 }
 
 type UserResponse struct {

@@ -12,6 +12,7 @@ var Db *gorm.DB
 type courseClient struct{}
 
 type CourseClientInterface interface {
+	GetCourses() (model.Courses, error.ApiError)
 	GetCoursesByUserId(userId int) (model.Courses, error.ApiError)
 	SearchCoursesByTitle(title string) (model.Courses, error.ApiError)
 	SearchCoursesByCategory(category string) (model.Courses, error.ApiError)
@@ -21,16 +22,28 @@ type CourseClientInterface interface {
 	DeleteCourse(courseId int) error.ApiError
 }
 
-
 var (
 	CourseClient CourseClientInterface
 )
 
-func init(){
+func init() {
 	CourseClient = &courseClient{}
 }
 
-func (c *courseClient) GetCoursesByUserId(userId int) (model.Courses, error.ApiError){
+func (c *courseClient) GetCourses() (model.Courses, error.ApiError) {
+
+	var course model.Courses
+
+	result := Db.Find(&course)
+
+	if result.Error != nil {
+		return nil, error.NewNotFoundApiError("???")
+	}
+	return course, nil
+
+}
+
+func (c *courseClient) GetCoursesByUserId(userId int) (model.Courses, error.ApiError) {
 	var course model.Courses
 
 	result := Db.Where("id=?", userId).Find(&course)

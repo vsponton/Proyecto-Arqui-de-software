@@ -37,18 +37,14 @@ func Login(c *gin.Context) {
 	*/
 
 	var loginResponseDto dto.LoginResponse
-	loginResponseDto, err = services.UserClient.Login(loginDto)
-
-	token, err := services.Users(loginDto.Email, loginDto.Password)
+	loginResponseDto, err = services.UserService.Login(loginDto)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, loginResponseDto{
-		Token: token,
-	})
+	c.JSON(http.StatusOK, loginResponseDto)
 }
 
 func Register(c *gin.Context) {
@@ -64,7 +60,7 @@ func Register(c *gin.Context) {
 	}
 	log.Debug(registerRequest)
 
-	createdUser, er := services.UserClient.Register(registerRequest)
+	createdUser, er := services.UserService.Register(registerRequest)
 	if er != nil {
 		c.JSON(er.Status(), gin.H{
 			"message": fmt.Sprintf("Error creating user: %s", er.Error()),

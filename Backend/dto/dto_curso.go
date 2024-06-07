@@ -2,7 +2,6 @@ package dto
 
 //dto es domain
 
-
 type CoursesResponse_Full []CourseResponse_Full // si está en plural son muchos
 
 type CoursesRequest_Category []CourseRequest_Category
@@ -28,13 +27,13 @@ type CourseRequest_Description struct {
 // DETALLE DEL CURSO
 
 type CourseResponse_Full struct {
-	ID_Course    int64  `json:"id_course"`
-	Title        string `json:"title"`
-	Description  string `json:"description"`
-	Category     string `json:"category"`
-	ImageURL     string `json:"image_url"`
-	Duration     int64  `json:"duration"`
-	Instructor   string `json:"instructor"`
+	ID_Course   int    `json:"id_course"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Category    string `json:"category"`
+	ImageURL    string `json:"image_url"`
+	Duration    int    `json:"duration"`
+	//Instructor   string `json:"instructor"`
 	Requirements string `json:"requirements"`
 }
 
@@ -44,6 +43,6 @@ type CourseRequest_Registration struct {
 	// sobre el usuario
 	Token string `json:"token"`
 	// sobre el curso
-	ID_Course int64  `json:"id"`
+	ID_Course int    `json:"id"`
 	Title     string `json:"title"`
 }

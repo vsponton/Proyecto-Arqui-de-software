@@ -18,6 +18,7 @@ func MapUrls(router *gin.Engine) {
 	router.POST("/register", loginController.Register)
 
 	// Courses Mapping
+	router.GET("/course", courseController.GetCourses)
 	router.GET("/course/:id_user", courseController.GetCourseByIdUser)
 	router.GET("/course/title=:title", courseController.GetCourseByTitle)
 	router.GET("/course/category=:category", courseController.GetCourseByCategory)
