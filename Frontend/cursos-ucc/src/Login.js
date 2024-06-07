@@ -20,9 +20,10 @@ async function login(username, password) {
       return response.json()
     })
     .then(response => {
-      Cookie.set("user_id", response.user_id, { path: '/' })
-      Cookie.set("username", username, { path: '/login' })
+      Cookie.set("token", response.token, { path: '/' })
+      Cookie.set("email", username)
     })
+    
 }
 
 async function register(firstname, lastname, email, password) {
@@ -40,8 +41,7 @@ async function register(firstname, lastname, email, password) {
       return response.json()
     })
     .then(response => {
-      Cookie.set("user_id", response.user_id, { path: '/' })
-      Cookie.set("username", email, { path: '/login' })
+      Cookie.set("token", response.token, { path: '/' })
     })
 }
 
@@ -62,7 +62,7 @@ const Login = () => {
     event.preventDefault();
     const { email, password } = event.target.elements;
     const userData = await login(email.value, password.value);
-    if (Cookie.get("user_id") > -1) {
+    if (Cookie.get("token") > -1) {
       window.location = window.location.origin + "/";
     } else {
       setErrorMessages({ name: "default", message: error });

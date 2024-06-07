@@ -1,6 +1,10 @@
 package db
 
 import (
+	courseClient "cursos-ucc/clients/course"
+	userClient "cursos-ucc/clients/user"
+	"cursos-ucc/model"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	log "github.com/sirupsen/logrus"
@@ -13,9 +17,9 @@ var (
 
 func init() {
 	// DB Connections Paramters
-	DBName := "test"  //Nombre de la base de datos local de ustedes
+	DBName := "test"      //Nombre de la base de datos local de ustedes
 	DBUser := "root"      //usuario de la base de datos, habitualmente root
-	DBPass := "root"            //password del root en la instalacion
+	DBPass := ""          //password del root en la instalacion
 	DBHost := "localhost" //host de la base de datos. hbitualmente 127.0.0.1
 	// ------------------------
 
@@ -31,4 +35,11 @@ func init() {
 	// We need to add all CLients that we build
 	userClient.Db = Db
 	courseClient.Db = Db
+}
+
+func StartDbEngine() {
+	// We need to migrate all classes model.
+	Db.AutoMigrate(&model.User{}, &model.Course{}, &model.Register{})
+
+	log.Info("Finishing Migration Database Tables")
 }
