@@ -16,28 +16,33 @@ func Login(c *gin.Context) {
 
 	if err != nil {
 		log.Error(err.Error())
-		c.JSON(http.StatusBadRequest, dto.LoginResponse{
-			Message: fmt.Sprintf("Invalid request: %s", err.Error()),
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": fmt.Sprintf("Invalid request: %s", err.Error()),
 		})
 		return
 	}
 	log.Debug(loginDto)
 
-	var loginResponseDto dto.LoginResponse
-	loginResponseDto, err = services.UserService.Login(loginDto)
-
-	token, err := services.Login(loginDto.Email, loginDto.Password)
-
-	if err != nil {
-		if err.Error() == "invalid credentials" {
-			c.JSON(http.StatusUnauthorized, dto.Result{
-				Message: "Unauthorized login: Invalid credentials",
+	/*
+		if err != nil {
+			log.Error(err.Error())
+			c.JSON(http.StatusBadRequest, dto.LoginResponse{
+				"message": fmt.Sprintf("Invalid request: %s", err.Error()),
+				//Message: fmt.Sprintf("Invalid request: %s", err.Error()),
+				//Message: "Unauthorized login: Invalid credentials",
 			})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, dto.Result{
-			Message: fmt.Sprintf("Internal server error: %s", err.Error()),
-		})
+		log.Debug(loginDto)
+	*/
+
+	var loginResponseDto dto.LoginResponse
+	loginResponseDto, err = services.UserClient.Login(loginDto)
+
+	token, err := services.Users(loginDto.Email, loginDto.Password)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -59,7 +64,7 @@ func Register(c *gin.Context) {
 	}
 	log.Debug(registerRequest)
 
-	createdUser, er := services.RegisterService.InsertUser(registerRequest)
+	createdUser, er := services.UserClient.Register(registerRequest)
 	if er != nil {
 		c.JSON(er.Status(), gin.H{
 			"message": fmt.Sprintf("Error creating user: %s", er.Error()),

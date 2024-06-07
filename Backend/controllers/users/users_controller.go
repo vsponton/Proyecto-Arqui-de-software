@@ -13,11 +13,14 @@ func GetUserById(c *gin.Context) {
 
 	// log.Debug("User id: " + c.Param("id"))
 
-	var UsersResponse dto.UsersResponse
+	//var UsersResponse dto.UsersResponse
 
 	id, _ := strconv.Atoi(c.Param("user_id"))
 
-	UsersResponse, err := service.UserService.GetUserById(id)
+	var userDto dto.UserResponse
+
+	//UsersResponse, err := service.UserService.GetUserById(id)
+	err := service.UserService.GetUserById(id)
 
 	if err != nil {
 		// log.Error(err.Error())

@@ -23,7 +23,7 @@ func init() {
 }
 
 func StartRoute() {
-	mapUrls()
+	MapUrls(router)
 
 	log.Info("Starting server")
 	err := router.Run(":8080")

@@ -30,17 +30,5 @@ func init() {
 
 	// We need to add all CLients that we build
 	userClient.Db = Db
-	courseClient.Db =Db
+	courseClient.Db = Db
 }
-
-////// chat
-/*
-func StartDbEngine() {
-	// We need to migrate all classes model.
-	db.AutoMigrate(&model.courses{})
-	db.AutoMigrate(&model.register{})
-	db.AutoMigrate(&model.user{})
-
-	log.Info("Finishing Migration Database Tables")
-}
-*/

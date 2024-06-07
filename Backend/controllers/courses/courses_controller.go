@@ -2,14 +2,12 @@ package controllers
 
 import (
 	"cursos-ucc/dto"
+	service "cursos-ucc/services"
 	"net/http"
 	"strconv"
-	service "cursos-ucc/services"
 
 	"github.com/gin-gonic/gin"
 )
-
-var courseService service.CourseServiceInterface = service.CourseService
 
 func GetCourseByIdUser(c *gin.Context) {
 
@@ -28,7 +26,7 @@ func GetCourseByIdUser(c *gin.Context) {
 
 func GetCourseByTitle(c *gin.Context) {
 
-	//coursesDto, err := courseService.GetCourseByIdUser(id) ---> ver si va o no 
+	//coursesDto, err := courseService.GetCourseByIdUser(id) ---> ver si va o no
 
 	var title string
 	title = c.Param(title)

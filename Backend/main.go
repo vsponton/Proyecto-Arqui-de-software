@@ -8,6 +8,6 @@ import (
 
 func main() {
 	engine := gin.New()
-	app.MapRoutes(engine)
+	app.MapUrls(engine)
 	engine.Run(":8080")
 }
