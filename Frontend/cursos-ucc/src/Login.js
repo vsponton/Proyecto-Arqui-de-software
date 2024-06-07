@@ -6,7 +6,7 @@ import Cookies from "universal-cookie";
 const Cookie = new Cookies();
 
 async function login(username, password) {
-  return await fetch('http://localhost:8090/login', {
+  return await fetch('http://localhost:8080/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -27,7 +27,7 @@ async function login(username, password) {
 }
 
 async function register(firstname, lastname, email, password) {
-  return await fetch('http://localhost:8090/register', {
+  return await fetch('http://localhost:8080/register', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'

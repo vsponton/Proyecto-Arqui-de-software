@@ -5,7 +5,7 @@ import (
 	service "cursos-ucc/services"
 	"net/http"
 	"strconv"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -13,7 +13,7 @@ func GetCourses(c *gin.Context) {
 
 	var coursesDto dto.CoursesResponse_Full
 	coursesDto, err := service.CourseService.GetCourses()
-
+	fmt.Println(coursesDto, err)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return

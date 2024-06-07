@@ -32,7 +32,7 @@ type CourseResponse_Full struct {
 	Description string `json:"description"`
 	Category    string `json:"category"`
 	ImageURL    string `json:"image_url"`
-	Duration    int    `json:"duration"`
+	Duration    string    `json:"duration"`
 	//Instructor   string `json:"instructor"`
 	Requirements string `json:"requirements"`
 }

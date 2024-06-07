@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 
 const Cookie = new Cookies();
 async function getCoursesById(id){
-    return await fetch('http://localhost:8090/user/' + id, {
+    return await fetch('http://localhost:8080/course/' + id, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -14,17 +14,10 @@ async function getCoursesById(id){
 
 
 const Courses = () => {
-    const[course, setCourse] =useState({
-        "id_course": 5,
-        "title":"Programación en C++",
-        "description": "Este curso está diseñado para proporcionar una comprensión completa del lenguaje de programación C++. A través de una combinación de teoría y práctica, los estudiantes aprenderán los fundamentos de la programación en C++, incluyendo estructuras de control, funciones, clases, objetos, y manejo de memoria.",
-        "category": "programacion",
-        "image_url":"https://i.pinimg.com/564x/3d/d4/fd/3dd4fdcd69a2858b06bd01be9ea3c531.jpg",
-        "duration": "8 semanas, con un compromiso de 4-6 horas por semana.",
-        "instructor": "Agustin Ceballos, Ingeniero en Sistemas con más de 10 años de experiencia en desarrollo de software y enseñanza de programación.",
-        "requirements": "•	Acceso a una computadora con conexión a internet.",
+    const[course, setCourse] =useState([
 
-    });
+    ]
+    );
 
     if (!course.id_course) {
         let id = window.location.search.split("=")[1]

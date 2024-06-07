@@ -8,7 +8,7 @@ type Course struct {
 	Description  string `gorm:"type:varchar(255);not null"` // Course description
 	Category     string `gorm:"type:varchar(255);not null"` // Course Category. Allowed values: to be defined
 	ImageURL     string `gorm:"type:varchar(255);not null"` // Course image URL
-	Duration     int    `gorm:"type:varchar(255);not null"` // Course duration
+	Duration     string    `gorm:"type:varchar(255);not null"` // Course duration
 	Requirements string `gorm:"type:varchar(255);not null"` //Course requirements
 }
 
