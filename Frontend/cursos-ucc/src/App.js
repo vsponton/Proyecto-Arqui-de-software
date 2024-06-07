@@ -17,6 +17,7 @@ return (
     </Router>
   );
 }
+export default App;
 
 // export default App;
 // function App() {
@@ -76,4 +77,3 @@ return (
 //   );
 // }
 
-export default App;

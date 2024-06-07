@@ -102,6 +102,6 @@ form button {
   font-weight: 600;
 }
 
-.register-link p a: hover {
+.register-link p a:hover {
   text-decoration: underline;
 }
