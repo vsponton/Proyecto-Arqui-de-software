@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Home.css';
 import Cookies from "universal-cookie";
 import { FaEmber } from 'react-icons/fa';
 
 const Cookie = new Cookies();
 
+
+/**
 async function getUserByEmail(email){
     return await fetch('http://localhost:8080/user/' + email, {
     method: 'GET',
     
 }).then(response => response.json())
 }
+
 async function getCourses(){
-  return await fetch('http://localhost:8080/course', {
-    method: "GET",
-    
-  }).then(response => response.json())
+  return await fetch('http://localhost:8080/course')
+    .then(response => response.json())
 }
+
 async function getCursoByUserId(userId){
   return await fetch('http://localhost:8080/course/' + userId, {
     method: "GET",
@@ -45,6 +47,7 @@ async function putCurso(curso){
     body: JSON.stringify(curso)
   }).then(response => response.json())
 }
+
 async function deleteCurso(curso){
   return await fetch('http://localhost:8080/course/' + curso.id_course, {
     method: "DELETE",
@@ -58,7 +61,7 @@ async function getCursoByDescription(description){
     
   }).then(response => response.json())
 }
-
+**/
 
 const Home = () => {
   const [admin, setAdmin] = useState(false);
@@ -97,6 +100,13 @@ const Home = () => {
     }*/
   ]);
 
+  useEffect(() => {
+    fetch('http://localhost:8080/course')
+      .then(response => response.json())
+      .then(data => setCourses(data))
+      .catch(error => console.error('Error fetching courses:', error));
+  }, [courses]);
+
   const [availableCourses, setAvailableCourses] = useState([
     {
       title: "Programación en GO",
@@ -113,10 +123,12 @@ const Home = () => {
     setIsLogged(true)
   }
 
+  /*
   if(!courses.length && needCourses){
     getCourses().then(response => setCourses(response))
     setNeedCourses(false)
   }
+    */
 
   const toggleAdmin = () => {
     setAdmin(!admin);
