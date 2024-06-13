@@ -1,22 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Home.css';
 import Cookies from "universal-cookie";
 import { FaEmber } from 'react-icons/fa';
 
 const Cookie = new Cookies();
 
+
+/**
 async function getUserByEmail(email){
     return await fetch('http://localhost:8080/user/' + email, {
     method: 'GET',
     
 }).then(response => response.json())
 }
+
 async function getCourses(){
-  return await fetch('http://localhost:8080/course', {
-    method: "GET",
-    
-  }).then(response => response.json())
+  return await fetch('http://localhost:8080/course')
+    .then(response => response.json())
 }
+
 async function getCursoByUserId(userId){
   return await fetch('http://localhost:8080/course/' + userId, {
     method: "GET",
@@ -45,6 +47,7 @@ async function putCurso(curso){
     body: JSON.stringify(curso)
   }).then(response => response.json())
 }
+
 async function deleteCurso(curso){
   return await fetch('http://localhost:8080/course/' + curso.id_course, {
     method: "DELETE",
@@ -58,6 +61,7 @@ async function getCursoByDescription(description){
     
   }).then(response => response.json())
 }
+<<<<<<< HEAD
 
 async function getAvailableCourses(){
   return await fetch('http://localhost:8080/course/user/available', {
@@ -88,6 +92,9 @@ function goto(path){
   window.location = window.location.origin + path
 }
 
+=======
+**/
+>>>>>>> b8ca57bfe323424126dfecabcf2b9fa4fc94d9f5
 
 const Home = () => {
   const [admin, setAdmin] = useState(false);
@@ -101,12 +108,35 @@ const Home = () => {
   const [registeredCourses, setRegisteredCourses] = useState([]);
   const [availableCourses, setAvailableCourses] = useState([]);
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+    fetch('http://localhost:8080/course')
+      .then(response => response.json())
+      .then(data => setCourses(data))
+      .catch(error => console.error('Error fetching courses:', error));
+  }, [courses]);
+
+  const [availableCourses, setAvailableCourses] = useState([
+    {
+      title: "Programación en GO",
+      description: "Este curso está diseñado para proporcionar una comprensión completa del lenguaje de programación GO. A través de una combinación de teoría y práctica, los estudiantes aprenderán los fundamentos de la programación en GO, incluyendo estructuras de control, funciones, clases, objetos, y manejo de memoria.",
+      category: "programacion",
+      image_url: "https://i.pinimg.com/564x/3d/d4/fd/3dd4fdcd69a2858b06bd01be9ea3c531.jpg",
+      duration: "8 semanas, con un compromiso de 4-6 horas por semana.",
+      instructor: "Flor Ceballos, Ingeniera en Sistemas con más de 10 años de experiencia en desarrollo de software y enseñanza de programación.",
+      requirements: "Acceso a una computadora con conexión a internet.",
+    }
+  ]);
+>>>>>>> b8ca57bfe323424126dfecabcf2b9fa4fc94d9f5
 
 
+  /*
   if(!courses.length && needCourses){
     getCourses().then(response => setCourses(response))
     setNeedCourses(false)
   }
+<<<<<<< HEAD
   if(!availableCourses.length && needAvailableCourses){
     getAvailableCourses().then(response => {
       if (response) {
@@ -123,6 +153,10 @@ const Home = () => {
     })
     setNeedRegisteredCourses(false)
   }
+=======
+    */
+
+>>>>>>> b8ca57bfe323424126dfecabcf2b9fa4fc94d9f5
   const toggleAdmin = () => {
     setAdmin(!admin);
   };
