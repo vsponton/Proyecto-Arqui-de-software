@@ -1,9 +1,10 @@
 import React, { useEffect, useState} from 'react'
 import './Courses.css';
+import { useParams } from 'react-router-dom';
 import Cookies from "universal-cookie";
 
 const Cookie = new Cookies();
-async function getCoursesById(id){
+async function getCourseById(id){
     return await fetch('http://localhost:8080/course/' + id, {
     method: 'GET',
     headers: {
@@ -12,19 +13,17 @@ async function getCoursesById(id){
 }).then(response => response.json())
 }
 
+function goto(path){
+    window.location = window.location.origin + path
+}
 
 const Courses = () => {
-    const[course, setCourse] =useState([
-
-    ]
-    );
+    const[course, setCourse] =useState({});
+    const { id } = useParams();
 
     if (!course.id_course) {
-        let id = window.location.search.split("=")[1]
-        getCoursesById(Number(id)).then(response => {setCourse(response);})
-      }    
-
-
+        getCourseById(Number(id)).then(response => {setCourse(response);})
+    }
     const showCourses= () =>{
         return(
             <div>
@@ -60,6 +59,7 @@ const Courses = () => {
 
     return (
         <div>
+            <button onClick={() => goto("/")}>HOME 🏠</button>
             {showCourses()}
         </div>
     )

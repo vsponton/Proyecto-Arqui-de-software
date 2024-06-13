@@ -13,7 +13,9 @@ type courseClient struct{}
 
 type CourseClientInterface interface {
 	GetCourses() (model.Courses, error.ApiError)
+	GetCourseById(id int) (model.Course, error.ApiError)
 	GetCoursesByUserId(userId int) (model.Courses, error.ApiError)
+	GetAvailableCoursesByUserId(userId int) (model.Courses, error.ApiError)
 	SearchCoursesByTitle(title string) (model.Courses, error.ApiError)
 	SearchCoursesByCategory(category string) (model.Courses, error.ApiError)
 	SearchCoursesByDescription(description string) (model.Courses, error.ApiError)
@@ -43,15 +45,44 @@ func (c *courseClient) GetCourses() (model.Courses, error.ApiError) {
 
 }
 
-func (c *courseClient) GetCoursesByUserId(userId int) (model.Courses, error.ApiError) {
-	var course model.Courses
+func (c *courseClient) GetCourseById(id int) (model.Course, error.ApiError) {
+	var course model.Course
 
-	result := Db.Where("id=?", userId).Find(&course)
+	result := Db.Where("id=?", id).Find(&course)
+
+	if result.Error != nil {
+		return model.Course{}, error.NewNotFoundApiError("???")
+	}
+	return course, nil
+}
+
+func (c *courseClient) GetCoursesByUserId(userId int) (model.Courses, error.ApiError) {
+	var courses model.Courses
+
+	result := Db.Joins("JOIN registers ON registers.course_id = courses.id").
+		Where("registers.user_id = ?", userId).
+		Find(&courses)
 
 	if result.Error != nil {
 		return nil, error.NewNotFoundApiError("???")
 	}
-	return course, nil
+	return courses, nil
+}
+
+func (c *courseClient) GetAvailableCoursesByUserId(userId int) (model.Courses, error.ApiError) {
+	var courses model.Courses
+
+	result := Db.
+		Table("courses").
+		Select("courses.*").
+		Joins("LEFT JOIN registers ON registers.course_id = courses.id AND registers.user_id = ?", userId).
+		Where("registers.user_id IS NULL").
+		Find(&courses)
+
+	if result.Error != nil {
+		return nil, error.NewNotFoundApiError("???")
+	}
+	return courses, nil
 }
 
 func (c *courseClient) SearchCoursesByTitle(title string) (model.Courses, error.ApiError) {
@@ -138,3 +169,4 @@ func (c *courseClient) DeleteCourse(courseId int) error.ApiError {
 	}
 	return nil
 }
+

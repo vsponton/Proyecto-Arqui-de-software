@@ -5,12 +5,11 @@ import (
 	loginController "cursos-ucc/controllers/login"
 	userController "cursos-ucc/controllers/users"
 
-	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 )
 
 // MapUrls asigna las rutas a los controladores correspondientes
-func MapUrls(router *gin.Engine) {
+func MapUrls() {
 	// Login Mapping
 	router.POST("/login", loginController.Login)
 
@@ -19,11 +18,14 @@ func MapUrls(router *gin.Engine) {
 
 	// Courses Mapping
 	router.GET("/course", courseController.GetCourses)
-	router.GET("/course/:id_user", courseController.GetCourseByIdUser)
+	router.GET("/course/:id", courseController.GetCourseById)
 	router.GET("/course/title=:title", courseController.GetCourseByTitle)
 	router.GET("/course/category=:category", courseController.GetCourseByCategory)
 	router.GET("/course/description=:description", courseController.GetCourseByDescription)
 
+	router.POST("/course/register", courseController.RegisterUserToCourse)
+	router.POST("/course/user/registered", courseController.GetCoursesByUser)
+	router.POST("/course/user/available", courseController.GetAvailableCoursesByUser)
 	router.POST("/course", courseController.PostCourse)
 
 	router.PUT("/course/:id_course", courseController.PutCourse)

@@ -2,6 +2,7 @@ package db
 
 import (
 	courseClient "cursos-ucc/clients/course"
+	registerClient "cursos-ucc/clients/register"
 	userClient "cursos-ucc/clients/user"
 	"cursos-ucc/model"
 
@@ -35,6 +36,7 @@ func init() {
 	// We need to add all CLients that we build
 	userClient.Db = Db
 	courseClient.Db = Db
+	registerClient.Db = Db
 }
 
 func StartDbEngine() {

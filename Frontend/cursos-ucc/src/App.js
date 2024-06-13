@@ -12,7 +12,7 @@ return (
       <Routes>
         <Route exact path = "/" element={<Home/>}/>
         <Route path= "/login" element={<Login/>}/>
-        <Route path= "/courses" element={<Courses/>}/>
+        <Route path= "/courses/:id" element={<Courses/>}/>
       </Routes>
     </Router>
   );

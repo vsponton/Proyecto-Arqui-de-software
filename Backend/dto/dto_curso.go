@@ -24,6 +24,10 @@ type CourseRequest_Description struct {
 	Description string `json:"description"`
 }
 
+type CourseRequest_Token struct {
+	Token string `json:"token"`
+}
+
 // DETALLE DEL CURSO
 
 type CourseResponse_Full struct {
@@ -32,17 +36,17 @@ type CourseResponse_Full struct {
 	Description string `json:"description"`
 	Category    string `json:"category"`
 	ImageURL    string `json:"image_url"`
-	Duration    string    `json:"duration"`
+	Duration    string `json:"duration"`
 	//Instructor   string `json:"instructor"`
 	Requirements string `json:"requirements"`
 }
 
 // INSCRIPCION EN CURSO
-
 type CourseRequest_Registration struct {
-	// sobre el usuario
-	Token string `json:"token"`
-	// sobre el curso
-	ID_Course int    `json:"id"`
-	Title     string `json:"title"`
+	Token     string `json:"token"`
+	ID_Course int    `json:"course_id"`
+}
+
+type CourseResponse_Registration struct {
+	ID_Course int `json:"course_id"`
 }

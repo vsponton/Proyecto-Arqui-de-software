@@ -5,13 +5,17 @@ import Cookies from "universal-cookie";
 
 const Cookie = new Cookies();
 
+function goto(path){
+  window.location = window.location.origin + path
+}
+
 async function login(username, password) {
   return await fetch('http://localhost:8080/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-	body: JSON.stringify({"username": username, "password": password})
+	body: JSON.stringify({"email": username, "password": password})
   })
     .then(response => {
       if (response.status === 400 || response.status === 401) {
@@ -22,11 +26,12 @@ async function login(username, password) {
     .then(response => {
       Cookie.set("token", response.token, { path: '/' })
       Cookie.set("email", username)
+      goto("/")
     })
     
 }
 
-async function register(firstname, lastname, email, password) {
+async function postRegister(firstname, lastname, email, password) {
   return await fetch('http://localhost:8080/register', {
     method: 'POST',
     headers: {
@@ -72,7 +77,7 @@ const Login = () => {
   const handleRegisterSubmit = async (event) => {
     event.preventDefault();
     const { firstname, lastname, email, password } = event.target.elements;
-    const userData = await register(firstname.value, lastname.value, email.value, password.value);
+    const userData = await postRegister(firstname.value, lastname.value, email.value, password.value);
     if (Cookie.get("user_id") > -1) {
       window.location = window.location.origin + "/";
     } else {

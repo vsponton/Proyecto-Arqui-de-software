@@ -3,10 +3,12 @@ package controllers
 import (
 	"cursos-ucc/dto"
 	service "cursos-ucc/services"
+	"fmt"
 	"net/http"
 	"strconv"
-	"fmt"
+
 	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
 func GetCourses(c *gin.Context) {
@@ -22,19 +24,51 @@ func GetCourses(c *gin.Context) {
 	c.JSON(http.StatusOK, coursesDto)
 }
 
-func GetCourseByIdUser(c *gin.Context) {
-
-	id, _ := strconv.Atoi(c.Param("id_user"))
+func GetCoursesByUser(c *gin.Context) {
+	var tokenDto dto.CourseRequest_Token
+	_ = c.BindJSON(&tokenDto)
 
 	var coursesDto dto.CoursesResponse_Full
-	coursesDto, err := service.CourseService.GetCoursesByUserId(id)
+	coursesDto, err := service.CourseService.GetCoursesByUser(tokenDto.Token)
+
+	log.Debug(err)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	log.Debug(coursesDto)
+	c.JSON(http.StatusOK, coursesDto)
+}
+
+func GetAvailableCoursesByUser(c *gin.Context) {
+	var tokenDto dto.CourseRequest_Token
+	_ = c.BindJSON(&tokenDto)
+
+	var coursesDto dto.CoursesResponse_Full
+	coursesDto, err := service.CourseService.GetAvailableCoursesByUser(tokenDto.Token)
+
+	log.Debug(err)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, err.Error())
+		return
+	}
+	log.Debug(coursesDto)
+	c.JSON(http.StatusOK, coursesDto)
+}
+
+func GetCourseById(c *gin.Context) {
+
+	id, _ := strconv.Atoi(c.Param("id"))
+
+	var courseDto dto.CourseResponse_Full
+	courseDto, err := service.CourseService.GetCourseById(id)
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, coursesDto)
+	c.JSON(http.StatusOK, courseDto)
 }
 
 func GetCourseByTitle(c *gin.Context) {
@@ -146,4 +180,19 @@ func DeleteCourse(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusNoContent, nil)
+}
+
+func RegisterUserToCourse(c *gin.Context) {
+	var crr dto.CourseRequest_Registration
+	_ = c.BindJSON(&crr)
+
+	var CourseResponseDto dto.CourseResponse_Registration
+	CourseResponseDto, err := service.CourseService.RegisterUserToCourse(crr.Token, crr.ID_Course)
+	if err != nil {
+		//log.Error(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, CourseResponseDto)
 }

@@ -59,6 +59,35 @@ async function getCursoByDescription(description){
   }).then(response => response.json())
 }
 
+async function getAvailableCourses(){
+  return await fetch('http://localhost:8080/course/user/available', {
+    method: "POST",
+    body: JSON.stringify({"token":Cookie.get("token")})
+  }).then(response => response.json())
+}
+
+async function getRegisteredCourses(){
+  return await fetch('http://localhost:8080/course/user/registered', {
+    method: "POST",
+    body: JSON.stringify({"token":Cookie.get("token")})
+  }).then(response => response.json())
+}
+
+async function registerToCourse(id){
+  return await fetch("http://localhost:8080/course/register", {
+    method: "POST",
+    body: JSON.stringify({
+      token: Cookie.get("token"),
+      course_id: id,
+    })
+    
+  }).then(response => response.json())
+}
+
+function goto(path){
+  window.location = window.location.origin + path
+}
+
 
 const Home = () => {
   const [admin, setAdmin] = useState(false);
@@ -66,58 +95,34 @@ const Home = () => {
 
   const [needCourses, setNeedCourses] = useState(true);
   const [needAvailableCourses, setNeedAvailableCourses] = useState(true);
+  const [needRegisteredCourses, setNeedRegisteredCourses] = useState(true);
   
-  const [courses, setCourses] = useState([
-    /*{
-      title: "Base de datos",
-      description: "El curso ofrece una introducción completa al diseño, implementación y gestión de bases de datos..",
-      category: "programacion",
-      image_url: "https://blog.continentaluniversity.us/hubfs/que-es-sistema-gestion-base-datos-cuf.jpg",
-      duration: "5 meses, 2 veces por semana 2 horas cada dia.",
-      instructor: "Carlos Ceballos, Ingeniero en Sistemas ",
-      requirements: "Acceso a una computadora con conexión a internet.",
-    },
-    {
-      title: "Programación en C++",
-      description: " Este curso ofrece una introducción completa a la programación en C++, con conceptos basicos y avanzados llevados a la practica.",
-      category: "programacion",
-      image_url: "https://img-c.udemycdn.com/course/750x422/5127236_8148.jpg",
-      duration: "8 semanas, con un compromiso de 4-6 horas por semana.",
-      instructor: "Florencia Ceballos, Ingeniera en Sistemas con más de 10 años de experiencia en desarrollo de software y enseñanza de programación.",
-      requirements: "Acceso a una computadora con conexión a internet.",
-    },
-    {
-      title: "Ciberseguridad",
-      description: " Los estudiantes aprenderán sobre amenazas y vulnerabilidades, técnicas de protección de datos, criptografía y estrategias de defensa cibernética.",
-      category: "programacion",
-      image_url: "https://web-assets.esetstatic.com/tn/-x700/wls/2023/2023-09/cybersecurity.jpeg",
-      duration: "10 semanas, con un compromiso de 4-6 horas por semana.",
-      instructor: "Agostina Cristal, Ingeniera en Sistemas con más de 10 años de experiencia en desarrollo de software y enseñanza de programación.",
-      requirements: "Conocimientos básicos de informática y redes y acceso a una computadora con conexión a internet.",
-    }*/
-  ]);
+  const [courses, setCourses] = useState([]);
+  const [registeredCourses, setRegisteredCourses] = useState([]);
+  const [availableCourses, setAvailableCourses] = useState([]);
 
-  const [availableCourses, setAvailableCourses] = useState([
-    {
-      title: "Programación en GO",
-      description: "Este curso está diseñado para proporcionar una comprensión completa del lenguaje de programación GO. A través de una combinación de teoría y práctica, los estudiantes aprenderán los fundamentos de la programación en GO, incluyendo estructuras de control, funciones, clases, objetos, y manejo de memoria.",
-      category: "programacion",
-      image_url: "https://i.pinimg.com/564x/3d/d4/fd/3dd4fdcd69a2858b06bd01be9ea3c531.jpg",
-      duration: "8 semanas, con un compromiso de 4-6 horas por semana.",
-      instructor: "Flor Ceballos, Ingeniera en Sistemas con más de 10 años de experiencia en desarrollo de software y enseñanza de programación.",
-      requirements: "Acceso a una computadora con conexión a internet.",
-    }
-  ]);
 
-  if (Cookie.get("token") && !isLogged){
-    setIsLogged(true)
-  }
 
   if(!courses.length && needCourses){
     getCourses().then(response => setCourses(response))
     setNeedCourses(false)
   }
-
+  if(!availableCourses.length && needAvailableCourses){
+    getAvailableCourses().then(response => {
+      if (response) {
+        setAvailableCourses(response)
+      }
+    })
+    setNeedAvailableCourses(false)
+  }
+  if(!registeredCourses.length && needRegisteredCourses){
+    getRegisteredCourses().then(response => {
+      if (response) {
+        setRegisteredCourses(response)
+      }
+    })
+    setNeedRegisteredCourses(false)
+  }
   const toggleAdmin = () => {
     setAdmin(!admin);
   };
@@ -134,8 +139,8 @@ const Home = () => {
             <input type="text" placeholder="Buscar" />
           </div>
           <div className="courses">
-            {courses.map((course, index) => (
-              <div key={index} className="Course">
+            {courses ? courses.map((course, index) => (
+              <div key={index} className="Course" onClick={() => goto("/courses/" + course.id_course)}>
                 <div className="course-item">
                   <div>
                     <img src={course.image_url} alt={course.title} className="Course-image" />
@@ -153,7 +158,7 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            )) : <p> Loading... </p>}
           </div>
         </div>
         <div className="add-delete-buttons">
@@ -182,8 +187,8 @@ const Home = () => {
           </div>
           <div className="courses">
             <div className="courses-title">Mis Cursos</div>
-            {courses.map((course, index) => (
-              <div key={index} className="Course">
+            {registeredCourses ? registeredCourses.map((course, index) => (
+              <div key={index} className="Course" onClick={() => goto("/courses/" + course.id_course)}>
                 <div className="course-item">
                   <div>
                     <img src={course.image_url} alt={course.title} className="Course-image" />
@@ -197,14 +202,14 @@ const Home = () => {
                   </div>
                 </div>
               </div>
-            ))}
+            )) : <p>Loading courses...</p>}
           </div>
         </div>
         <div className="right-section">
           <div className="available-courses">
             <div className="available-courses-title">Cursos disponibles</div>
-            {availableCourses.map((course, index) => (
-              <div key={index} className="Course">
+            {availableCourses ? availableCourses.map((course, index) => (
+              <div key={index} className="Course" onClick={() => goto("/courses/" + course.id_course)}>
                 <div className="course-item">
                   <div>
                     <img src={course.image_url} alt={course.title} className="Course-image" />
@@ -213,11 +218,11 @@ const Home = () => {
                   <div>
                     <p className="course-duration">{course.duration}</p>
                   </div>
+                  <button className="alum-button" onClick={() => registerToCourse(course.id_course)}>INSCRIBIRME</button>
                 </div>
               </div>
-            ))}
+            )) : <p>Loading Courses...</p>}
           </div>
-          <button className="alum-button">INSCRIBIRME</button>
         </div>
       </div>
     );

@@ -62,7 +62,7 @@ func (u *userClient) GetUserById(id int) (model.User, error.ApiError) {
 
 func (u *userClient) GetUserByEmail(email string) (model.User, error.ApiError) {
 	var user model.User
-	result := Db.Where("email = ?", email).First(&user)
+	result := Db.Where("email = ?", email).Find(&user)
 	if result.Error != nil {
 		return model.User{}, error.NewNotFoundApiError("error getting user by email")
 	}

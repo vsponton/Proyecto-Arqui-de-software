@@ -39,21 +39,19 @@ func (u *userService) Login(loginDto dto.LoginRequest) (dto.LoginResponse, error
 		return loginResponseDto, error.NewBadRequestApiError("Usuario no encontrado")
 	}
 
-	if loginDto.Password != loginDto.Password && loginDto.Email != "encrypted" {
+	if loginDto.Password != user.PasswordHash {
 		return loginResponseDto, error.NewUnauthorizedApiError("Contraseña incorrecta")
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"username": loginDto.Email,
 		"pass":     loginDto.Password,
+		"id":       user.ID,
 	})
 	var jwtKey = []byte("secret_key")
 	tokenString, _ := token.SignedString(jwtKey)
-	if user.PasswordHash != tokenString && loginDto.Email == "encrypted" {
-		return loginResponseDto, error.NewUnauthorizedApiError("Contraseña incorrecta")
-	}
-
 	loginResponseDto.Token = tokenString
+
 	return loginResponseDto, nil
 }
 
